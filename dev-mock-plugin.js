@@ -105,6 +105,13 @@ export function devMockPlugin() {
           // Treat as file upload; we won’t parse multipart in this mock
           return sendText(res, 'Firmware uploaded')
         }
+        // CW page mock endpoints
+        if (url === '/cw' && method === 'GET') {
+          return sendJSON(res, { center: 2440000000, center2: 915000000, radios: 2 })
+        }
+        if (url === '/cw' && method === 'POST') {
+          return sendText(res, 'CW started')
+        }
         // Hardware page mock endpoints
         if (url === '/hardware.json' && method === 'GET') {
           return sendJSON(res, {

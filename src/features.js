@@ -11,10 +11,12 @@ const toBool = (v, defaultValue) => {
 };
 
 export const FEATURES = {
-  SHOW_LOGOS: toBool(import.meta.env.VITE_FEATURE_SHOW_LOGOS, false),
-  ENABLE_COUNTER: toBool(import.meta.env.VITE_FEATURE_ENABLE_COUNTER, false),
   IS_TX: toBool(import.meta.env.VITE_FEATURE_IS_TX, false),
   IS_8285: toBool(import.meta.env.VITE_FEATURE_IS_8285, false),
+  HAS_SX128X: toBool(import.meta.env.VITE_FEATURE_HAS_SX128X, false),
+  HAS_SX127X: toBool(import.meta.env.VITE_FEATURE_HAS_SX127X, false),
+  HAS_LR1121: toBool(import.meta.env.VITE_FEATURE_HAS_LR1121, false),
+  HAS_SUBGHZ: toBool(import.meta.env.VITE_FEATURE_HAS_SUBGHZ, false),
 };
 
 export default FEATURES;
