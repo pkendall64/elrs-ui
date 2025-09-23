@@ -205,5 +205,13 @@ export default defineConfig(({ command, mode }) => {
       viteEsp32HeaderPlugin(),
       ...(command === 'serve' ? [devMockPlugin()] : []),
     ],
+    build: {
+      rollupOptions: {
+        input: {
+          index: path.resolve(__dirname, 'index.html'),
+          hardware: path.resolve(__dirname, 'hardware.html'),
+        }
+      }
+    }
   }
 })

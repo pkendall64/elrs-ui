@@ -105,6 +105,67 @@ export function devMockPlugin() {
           // Treat as file upload; we won’t parse multipart in this mock
           return sendText(res, 'Firmware uploaded')
         }
+        // Hardware page mock endpoints
+        if (url === '/hardware.json' && method === 'GET') {
+          return sendJSON(res, {
+            customised: false,
+            chipselect: '',
+            oled_scl: '',
+            oled_sda: '',
+            oled_vbat: false,
+            ch3_lna: false,
+            gps_rx: '',
+            gps_tx: '',
+            gps_baud: '9600',
+            backled_r: '',
+            backled_g: '',
+            backled_b: '',
+            led_blue: '',
+            led_red: '',
+            led_green: '',
+            usb_vcp_alt: false,
+            serial_rx: '',
+            serial_tx: '',
+            serial2_rx: '',
+            serial2_tx: '',
+            debugback: false,
+            debug_backpack_rx: '',
+            debug_backpack_tx: '',
+            debug_backpack_baud: '460800',
+            use_backpack: false,
+            backpack_boot: '',
+            backpack_en: '',
+            passthrough_baud: '',
+            i2c_scl: '',
+            i2c_sda: '',
+            misc_fan_en: '',
+            misc_fan_pwm: '',
+            misc_fan_speeds: [],
+            misc_fan_tacho: '',
+            gsensor_stk8xxx: false,
+            misc_gsensor_int: '',
+            thermal_lm75a: false,
+            pwm_outputs: [],
+            vbat: '',
+            vbat_offset: '',
+            vbat_scale: '',
+            vbat_atten: '-1',
+            vtx_amp_pwm: '',
+            vtx_amp_vpd: '',
+            vtx_amp_vref: '',
+            vtx_nss: '',
+            vtx_sck: '',
+            vtx_miso: '',
+            vtx_mosi: '',
+            vtx_amp_vpd_25mW: [],
+            vtx_amp_vpd_100mW: [],
+            vtx_amp_pwm_25mW: [],
+            vtx_amp_pwm_100mW: []
+          })
+        }
+        if (url === '/hardware.json' && method === 'POST') {
+          return readBody().then(() => sendText(res, 'Hardware config saved'))
+        }
         next()
       })
     }
