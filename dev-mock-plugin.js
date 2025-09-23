@@ -112,6 +112,22 @@ export function devMockPlugin() {
         if (url === '/cw' && method === 'POST') {
           return sendText(res, 'CW started')
         }
+        // LR1121 page mock endpoints
+        if (method === 'GET' && url === '/lr1121.json') {
+          return sendJSON(res, {
+            manual: false,
+            radio1: { type: 0xA1, hardware: 0x01, firmware: 0x0102 },
+            radio2: { type: 0xA1, hardware: 0x02, firmware: 0x0102 }
+          })
+        }
+        if (method === 'POST' && url.startsWith('/lr1121')) {
+          // treat as file upload; ignore body
+          return sendJSON(res, { status: 'ok', msg: 'LR1121 firmware flashed successfully (mock). Reboot device to take effect.' })
+        }
+        if (method === 'POST' && url.startsWith('/reset')) {
+          // e.g. /reset?lr1121
+          return sendText(res, 'Custom firmware flag cleared, rebooting...')
+        }
         // Hardware page mock endpoints
         if (url === '/hardware.json' && method === 'GET') {
           return sendJSON(res, {

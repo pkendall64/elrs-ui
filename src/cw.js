@@ -1,6 +1,6 @@
-import FEATURES from './features.js'
-
 /* eslint-disable max-len, require-jsdoc */
+
+import FEATURES from './features.js'
 document.addEventListener('DOMContentLoaded', init, false);
 
 function _(el) {
