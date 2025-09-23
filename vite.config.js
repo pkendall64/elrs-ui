@@ -193,13 +193,17 @@ function viteEsp32HeaderPlugin(options = {}) {
   }
 }
 
+// Simple dev mock server plugin
+import { devMockPlugin } from './dev-mock-plugin.js'
+
 // Export standard Vite config with the plugin enabled for builds
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
     plugins: [
       htmlFeatureBlocksPlugin(env),
       viteEsp32HeaderPlugin(),
+      ...(command === 'serve' ? [devMockPlugin()] : []),
     ],
   }
 })

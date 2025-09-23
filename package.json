@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:tx": "VITE_FEATURE_IS_TX=true vite",
+    "dev:rx": "VITE_FEATURE_IS_TX=false vite",
     "clean": "rimraf dist",
     "build": "npm run clean && vite build",
     "build:tx": "npm run clean && VITE_FEATURE_IS_TX=true vite build",
