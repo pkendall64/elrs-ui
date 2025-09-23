@@ -3,7 +3,7 @@
 /* eslint-disable require-jsdoc */
 
 import FEATURES from './features.js'
-import './components/elrs-logo.js'
+import './components/elrs-header.js'
 import './components/elrs-footer.js'
 import './assets/mui.js'
 import { postWithFeedback, cuteAlert, autocomplete } from './assets/libs.js'

@@ -1,7 +1,8 @@
 /* eslint-disable max-len, require-jsdoc */
 
 import FEATURES from './features.js'
-import './components/elrs-logo.js'
+import './components/elrs-header.js'
+import './components/elrs-footer.js'
 
 document.addEventListener('DOMContentLoaded', init, false);
 
