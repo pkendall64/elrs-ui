@@ -1,11 +1,15 @@
-import FEATURES from './features.js'
-import { postWithFeedback, cuteAlert, autocomplete } from './assets/libs.js'
-
 /* eslint-disable comma-dangle */
 /* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
 
+import FEATURES from './features.js'
+import './components/elrs-logo.js'
+import './components/elrs-footer.js'
+import './assets/mui.js'
+import { postWithFeedback, cuteAlert, autocomplete } from './assets/libs.js'
+
 document.addEventListener('DOMContentLoaded', init, false);
+
 let colorTimer = undefined;
 let colorUpdated  = false;
 let storedModelId = 255;

@@ -1,6 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable comma-dangle */
 /* eslint-disable require-jsdoc */
+
+import './components/elrs-logo.js'
+import './assets/mui.js'
 import {cuteAlert, postWithFeedback} from "./assets/libs.js";
 
 document.addEventListener('DOMContentLoaded', onReady, false);

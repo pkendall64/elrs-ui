@@ -2,6 +2,7 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable require-jsdoc */
 
+import './components/elrs-logo.js'
 import { cuteAlert } from './assets/libs.js'
 
 document.addEventListener('DOMContentLoaded', onReady, false);
