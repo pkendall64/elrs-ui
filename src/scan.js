@@ -6,7 +6,7 @@ import FEATURES from './features.js'
 import './components/elrs-header.js'
 import './components/elrs-footer.js'
 import './assets/mui.js'
-import { postWithFeedback, cuteAlert, autocomplete } from './assets/libs.js'
+import {postWithFeedback, cuteAlert, autocomplete, initFiledrag} from './assets/libs.js'
 
 document.addEventListener('DOMContentLoaded', init, false);
 
@@ -283,7 +283,9 @@ function init() {
       // Start on the options tab
       mui.tabs.activate('pane-justified-1');
   }
-  initFiledrag();
+  const fileselect = _('firmware_file');
+  const filedrag = _('filedrag');
+  initFiledrag(fileselect, filedrag, fileSelectHandler);
   initOptions();
 }
 
@@ -494,29 +496,7 @@ _('network-tab').addEventListener('mui.tabs.showstart', getNetworks);
 
 // =========================================================
 
-function initFiledrag() {
-  const fileselect = _('firmware_file');
-  const filedrag = _('filedrag');
-
-  fileselect.addEventListener('change', fileSelectHandler, false);
-
-  const xhr = new XMLHttpRequest();
-  if (xhr.upload) {
-    filedrag.addEventListener('dragover', fileDragHover, false);
-    filedrag.addEventListener('dragleave', fileDragHover, false);
-    filedrag.addEventListener('drop', fileSelectHandler, false);
-    filedrag.style.display = 'block';
-  }
-}
-
-function fileDragHover(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  if (e.target === _('filedrag')) e.target.className = (e.type === 'dragover' ? 'hover' : '');
-}
-
 function fileSelectHandler(e) {
-  fileDragHover(e);
   // ESP32 expects .bin, ESP8285 RX expect .bin.gz
   const files = e.target.files || e.dataTransfer.files;
   const fileExt = files[0].name.split('.').pop();

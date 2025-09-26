@@ -35,6 +35,24 @@ export function postWithFeedback(title, msg, url, getdata, success) {
   };
 }
 
+function fileDragHover(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    if (e.target === _('filedrag')) e.target.className = (e.type === 'dragover' ? 'filedrag-hover' : 'filedrag');
+}
+
+export function initFiledrag(fileselect, filedrag, fileSelectHandler) {
+    fileselect.addEventListener('change', fileSelectHandler, false);
+
+    const xhr = new XMLHttpRequest();
+    if (xhr.upload) {
+        filedrag.addEventListener('dragover', fileDragHover, false);
+        filedrag.addEventListener('dragleave', fileDragHover, false);
+        filedrag.addEventListener('drop', (e) => {fileDragHover(e); fileSelectHandler(e)}, false);
+        filedrag.style.display = 'block';
+    }
+}
+
 // =========================================================
 
 // Alert box design by Igor Ferrão de Souza: https://www.linkedin.com/in/igor-ferr%C3%A3o-de-souza-4122407b/

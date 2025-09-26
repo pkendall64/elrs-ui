@@ -4,7 +4,7 @@
 
 import './components/elrs-header.js'
 import './components/elrs-footer.js'
-import { cuteAlert } from './assets/libs.js'
+import {cuteAlert, initFiledrag} from './assets/libs.js'
 
 document.addEventListener('DOMContentLoaded', onReady, false);
 
@@ -21,7 +21,9 @@ function onReady() {
   });
 
   if (window.File && window.FileList && window.FileReader) {
-    initFiledrag();
+    const fileselect = _('fileselect');
+    const filedrag = _('filedrag');
+    initFiledrag(fileselect, filedrag, fileSelectHandler);
   }
 
   loadData();
@@ -94,14 +96,7 @@ function updateHardwareSettings(data) {
   if (data.customised) _('custom_config').style.display = 'block';
 }
 
-function fileDragHover(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  if (e.target === _('filedrag')) e.target.className = (e.type === 'dragover' ? 'hover' : '');
-}
-
 function fileSelectHandler(e) {
-  fileDragHover(e);
   const files = e.target.files || e.dataTransfer.files;
   _('upload_hardware').reset();
   for (const f of files) {
@@ -116,19 +111,4 @@ function parseFile(file) {
     updateHardwareSettings(data);
   };
   reader.readAsText(file);
-}
-
-function initFiledrag() {
-  const fileselect = _('fileselect');
-  const filedrag = _('filedrag');
-
-  fileselect.addEventListener('change', fileSelectHandler, false);
-
-  const xhr = new XMLHttpRequest();
-  if (xhr.upload) {
-    filedrag.addEventListener('dragover', fileDragHover, false);
-    filedrag.addEventListener('dragleave', fileDragHover, false);
-    filedrag.addEventListener('drop', fileSelectHandler, false);
-    filedrag.style.display = 'block';
-  }
 }

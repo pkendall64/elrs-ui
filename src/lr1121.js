@@ -5,7 +5,7 @@
 import './components/elrs-header.js'
 import './components/elrs-footer.js'
 import './assets/mui.js'
-import {cuteAlert, postWithFeedback} from "./assets/libs.js";
+import {cuteAlert, initFiledrag, postWithFeedback} from "./assets/libs.js";
 
 document.addEventListener('DOMContentLoaded', onReady, false);
 
@@ -15,7 +15,9 @@ function _(el) {
 
 function onReady() {
   if (window.File && window.FileList && window.FileReader) {
-    initFiledrag();
+    const fileselect = _('firmware_file');
+    const filedrag = _('filedrag');
+    initFiledrag(fileselect, filedrag, fileSelectHandler);
   }
   loadData();
 }
@@ -48,29 +50,7 @@ function loadData() {
   xmlhttp.send();
 }
 
-function initFiledrag() {
-  const fileselect = _('firmware_file');
-  const filedrag = _('filedrag');
-
-  fileselect.addEventListener('change', fileSelectHandler, false);
-
-  const xhr = new XMLHttpRequest();
-  if (xhr.upload) {
-    filedrag.addEventListener('dragover', fileDragHover, false);
-    filedrag.addEventListener('dragleave', fileDragHover, false);
-    filedrag.addEventListener('drop', fileSelectHandler, false);
-    filedrag.style.display = 'block';
-  }
-}
-
-function fileDragHover(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  if (e.target === _('filedrag')) e.target.className = (e.type === 'dragover' ? 'hover' : '');
-}
-
 function fileSelectHandler(e) {
-  fileDragHover(e);
   const files = e.target.files || e.dataTransfer.files;
   uploadFile(files[0]);
 }
