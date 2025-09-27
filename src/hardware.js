@@ -32,7 +32,7 @@ function loadData() {
   xmlhttp.send();
 }
 
-function submitHardwareSettings() {
+_('submit-config').addEventListener('click', (e) => {
   const xhr = new XMLHttpRequest();
   xhr.open('POST', '/hardware.json');
   xhr.setRequestHeader('Content-Type', 'application/json');
@@ -70,7 +70,7 @@ function submitHardwareSettings() {
     }
   };
   return false;
-}
+})
 
 function updateHardwareSettings(data) {
   for (const [key, value] of Object.entries(data)) {
@@ -86,14 +86,13 @@ function updateHardwareSettings(data) {
   if (data.customised) _('custom_config').style.display = 'block';
 }
 
-_('filedrag').addEventListener('file-drop', fileSelectHandler)
-function fileSelectHandler(e) {
+_('filedrag').addEventListener('file-drop', (e) => {
   const files = e.detail.files;
   _('upload_hardware').reset();
   for (const f of files) {
     parseFile(f);
   }
-}
+})
 
 function parseFile(file) {
   const reader = new FileReader();
