@@ -13,8 +13,8 @@ function onReady() {
   // Add some tooltips to the pin type icons [CSS class name, Label]
   [['icon-input', 'Digital Input'], ['icon-output', 'Digital Output'], ['icon-analog', 'Analog Input'], ['icon-pwm', 'PWM Output']].forEach((t) =>
   {
-    let imgs = document.getElementsByClassName(t[0]);
-    [...imgs].forEach(i => i.title = t[1]);
+    const images = document.getElementsByClassName(t[0]);
+    [...images].forEach(i => i.title = t[1]);
   });
   loadData();
 }
@@ -32,7 +32,7 @@ function loadData() {
   xmlhttp.send();
 }
 
-_('submit-config').addEventListener('click', (e) => {
+_('submit-config').addEventListener('click', (_) => {
   const xhr = new XMLHttpRequest();
   xhr.open('POST', '/hardware.json');
   xhr.setRequestHeader('Content-Type', 'application/json');
@@ -89,16 +89,12 @@ function updateHardwareSettings(data) {
 _('filedrag').addEventListener('file-drop', (e) => {
   const files = e.detail.files;
   _('upload_hardware').reset();
-  for (const f of files) {
-    parseFile(f);
+  for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+          const data = JSON.parse(e.target.result);
+          updateHardwareSettings(data);
+      };
+      reader.readAsText(file);
   }
 })
-
-function parseFile(file) {
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const data = JSON.parse(e.target.result);
-    updateHardwareSettings(data);
-  };
-  reader.readAsText(file);
-}

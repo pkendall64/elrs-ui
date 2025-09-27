@@ -74,7 +74,6 @@ function uploadFile(file) {
 }
 
 function progressHandler(event) {
-  // _("loaded_n_total").innerHTML = "Uploaded " + event.loaded + " bytes of " + event.total;
   const percent = Math.round((event.loaded / event.total) * 100);
   _('progressBar').value = percent;
   _('status').innerHTML = percent + '% uploaded... please wait';
@@ -93,49 +92,30 @@ async function completeHandler(event) {
       _('status').innerHTML = percent + '% flashed... please wait';
       if (percent === 100) {
         clearInterval(interval);
-        _('status').innerHTML = '';
-        _('progressBar').value = 0;
-        _('upload_btn').disabled = false
-        mui.overlay('off')
-        await cuteAlert({
-          type: 'success',
-          title: 'Update Succeeded',
-          message: data.msg
-        });
+        await showAlert('success', 'Update Succeeded', data.msg);
       }
     }, 100);
   } else {
-    _('upload_btn').disabled = false
-    mui.overlay('off')
-    await cuteAlert({
-      type: 'error',
-      title: 'Update Failed',
-      message: data.msg
-    });
+    await showAlert('error', 'Update Failed', data.msg);
   }
 }
 
 function errorHandler(event) {
-  _('status').innerHTML = '';
-  _('progressBar').value = 0;
-  _('upload_btn').disabled = false
-  mui.overlay('off')
-  return cuteAlert({
-    type: 'error',
-    title: 'Update Failed',
-    message: event.target.responseText
-  });
+    return showAlert('error', 'Update Failed', event.target.responseText);
 }
 
 function abortHandler(event) {
-  _('status').innerHTML = '';
-  _('progressBar').value = 0;
-  _('upload_btn').disabled = false
-  mui.overlay('off')
-  return cuteAlert({
-    type: 'info',
-    title: 'Update Aborted',
-    message: event.target.responseText
-  });
+    return showAlert('info', 'Update Aborted', event.target.responseText);
 }
 
+function showAlert(type, title, message) {
+    _('status').innerHTML = '';
+    _('progressBar').value = 0;
+    _('upload_btn').disabled = false
+    mui.overlay('off')
+    return cuteAlert({
+        type: type,
+        title: title,
+        message: message
+    });
+}
