@@ -1,4 +1,5 @@
 import { defineConfig, loadEnv } from 'vite'
+import babel from 'vite-plugin-babel'
 import { promises as fs } from 'fs'
 import path from 'path'
 import zlib from 'zlib'
@@ -154,6 +155,16 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       htmlFeatureBlocksPlugin(env),
       viteEsp32HeaderPlugin(),
+      babel({
+        babelConfig: {
+          babelrc: false,
+          configFile: false,
+          plugins: [
+            // Configure the decorators plugin with the desired version
+            ['@babel/plugin-proposal-decorators', { version: '2023-05' }],
+          ],
+        },
+      }),
       ...(command === 'serve' ? [devMockPlugin()] : []),
     ],
     build: {
