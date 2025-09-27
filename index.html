@@ -134,7 +134,7 @@
         <div class="mui-tabs__pane" id="pane-justified-2">
             <div class="mui-panel">
                 <h2>Firmware Update</h2>
-                Select the correct <strong>firmware.bin
+                Select the correct <strong>
                 <!-- FEATURE:IS_8285 -->
                 firmware.bin.gz
                 <!-- /FEATURE:IS_8285 -->
@@ -150,13 +150,7 @@
                 <br/>
                 <!-- /FEATURE:IS_8285 -->
                 <!-- /FEATURE:NOT IS_TX -->
-                <button id="upload_btn" class="mui-btn mui-btn--primary upload" style="margin: 0 auto; display:block;">
-                    <label>
-                        Select firmware file
-                        <input type="file" id="firmware_file" name="update[]" />
-                    </label>
-                </button>
-                <div id="filedrag" class="filedrag">or drop firmware file here</div>
+                <file-drop id="firmware-upload" label="Select firmware file">or drop firmware file here</file-drop>
                 <br/>
                 <h3 id="status"></h3>
                 <progress id="progressBar" value="0" max="100" style="width:100%;"></progress>

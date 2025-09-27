@@ -3,12 +3,9 @@
 import FEATURES from './features.js'
 import './components/elrs-header.js'
 import './components/elrs-footer.js'
+import { _ } from './assets/libs.js'
 
 document.addEventListener('DOMContentLoaded', init, false);
-
-function _(el) {
-  return document.getElementById(el);
-}
 
 var cwFreq = 2440000000;
 var xtalNominal = 52000000;

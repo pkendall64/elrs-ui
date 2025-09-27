@@ -38,13 +38,7 @@
 				</div>
 			</div>
 			<label>Upload LR1121 firmware binary:</label>
-			<button id="upload_btn" class="mui-btn mui-btn--small mui-btn--primary upload">
-				<label>
-					Upload
-					<input type="file" id="firmware_file" name="update[]" />
-				</label>
-			</button>
-			<div id="filedrag" class="filedrag">or drop files here</div>
+            <file-drop id="lr1121-upload" label="Upload">or drop firmware file here</file-drop>
 			<br/>
 			<h3 id="status"></h3>
 			<progress id="progressBar" value="0" max="100" style="width:100%;"></progress>
@@ -62,7 +56,7 @@
 			</table>
 		</div>
 	</div>
-<elrs-footer></elrs-footer>
+    <elrs-footer></elrs-footer>
 </body>
 <script type="module" src="src/lr1121.js"></script>
 </html>

@@ -65,13 +65,7 @@ td img.icon-pwm {
 		</div>
 		<div class="mui-panel">
 			<label>Upload target configuration (remember to press "Save Target Configuration" below):</label>
-			<button class="mui-btn mui-btn--small mui-btn--primary upload">
-				<label>
-					Upload
-					<input type="file" id="fileselect" name="fileselect[]" />
-				</label>
-			</button>
-			<div id="filedrag" class="filedrag">or drop files here</div>
+            <file-drop id="filedrag" label="Upload">or drop files here</file-drop>
 		</div>
 		<div class="mui-panel">
 			<form id='upload_hardware' method='POST' action="/hardware">

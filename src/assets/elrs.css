@@ -75,11 +75,7 @@ body, input, select, textarea {
 	cursor: default;
 }
 
-.filedrag-hover {
-    font-weight: bold;
-    text-align: center;
-    padding: 1em 0;
-    margin: 1em 0;
+.filedrag.hover {
 	color: #f00;
     border-radius: 7px;
     cursor: default;

@@ -4,21 +4,13 @@
 
 import './components/elrs-header.js'
 import './components/elrs-footer.js'
+import './components/filedrag.js'
 import './assets/mui.js'
-import {cuteAlert, initFiledrag, postWithFeedback} from "./assets/libs.js";
+import {cuteAlert, postWithFeedback, _} from "./assets/libs.js";
 
 document.addEventListener('DOMContentLoaded', onReady, false);
 
-function _(el) {
-  return document.getElementById(el);
-}
-
 function onReady() {
-  if (window.File && window.FileList && window.FileReader) {
-    const fileselect = _('firmware_file');
-    const filedrag = _('filedrag');
-    initFiledrag(fileselect, filedrag, fileSelectHandler);
-  }
   loadData();
 }
 
@@ -50,8 +42,9 @@ function loadData() {
   xmlhttp.send();
 }
 
+_('lr1121-upload').addEventListener('file-drop', fileSelectHandler)
 function fileSelectHandler(e) {
-  const files = e.target.files || e.dataTransfer.files;
+  const files = e.detail.files;
   uploadFile(files[0]);
 }
 

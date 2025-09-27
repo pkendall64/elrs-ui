@@ -4,6 +4,10 @@
 
 // =========================================================
 
+export function _(el) {
+    return document.getElementById(el);
+}
+
 export function postWithFeedback(title, msg, url, getdata, success) {
   return function(e) {
     e.stopPropagation();
@@ -33,24 +37,6 @@ export function postWithFeedback(title, msg, url, getdata, success) {
     else data = null;
     xmlhttp.send(data);
   };
-}
-
-function fileDragHover(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    if (e.target === _('filedrag')) e.target.className = (e.type === 'dragover' ? 'filedrag-hover' : 'filedrag');
-}
-
-export function initFiledrag(fileselect, filedrag, fileSelectHandler) {
-    fileselect.addEventListener('change', fileSelectHandler, false);
-
-    const xhr = new XMLHttpRequest();
-    if (xhr.upload) {
-        filedrag.addEventListener('dragover', fileDragHover, false);
-        filedrag.addEventListener('dragleave', fileDragHover, false);
-        filedrag.addEventListener('drop', (e) => {fileDragHover(e); fileSelectHandler(e)}, false);
-        filedrag.style.display = 'block';
-    }
 }
 
 // =========================================================

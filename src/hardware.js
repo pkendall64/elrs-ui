@@ -4,13 +4,10 @@
 
 import './components/elrs-header.js'
 import './components/elrs-footer.js'
-import {cuteAlert, initFiledrag} from './assets/libs.js'
+import './components/filedrag.js'
+import { cuteAlert, _ } from './assets/libs.js'
 
 document.addEventListener('DOMContentLoaded', onReady, false);
-
-function _(el) {
-  return document.getElementById(el);
-}
 
 function onReady() {
   // Add some tooltips to the pin type icons [CSS class name, Label]
@@ -19,13 +16,6 @@ function onReady() {
     let imgs = document.getElementsByClassName(t[0]);
     [...imgs].forEach(i => i.title = t[1]);
   });
-
-  if (window.File && window.FileList && window.FileReader) {
-    const fileselect = _('fileselect');
-    const filedrag = _('filedrag');
-    initFiledrag(fileselect, filedrag, fileSelectHandler);
-  }
-
   loadData();
 }
 
@@ -96,8 +86,9 @@ function updateHardwareSettings(data) {
   if (data.customised) _('custom_config').style.display = 'block';
 }
 
+_('filedrag').addEventListener('file-drop', fileSelectHandler)
 function fileSelectHandler(e) {
-  const files = e.target.files || e.dataTransfer.files;
+  const files = e.detail.files;
   _('upload_hardware').reset();
   for (const f of files) {
     parseFile(f);
