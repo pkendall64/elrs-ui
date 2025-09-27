@@ -8,6 +8,19 @@ export function _(el) {
     return document.getElementById(el);
 }
 
+export function _r(el) {
+    return this.renderRoot.getElementById(el);
+}
+
+export function _c(el) {
+    const els = document.querySelectorAll(el)
+    return {
+        on: function(e, f) {
+            els.forEach(el => { el.addEventListener(e, f) })
+        }
+    }
+}
+
 export function postWithFeedback(title, msg, url, getdata, success) {
   return function(e) {
     e.stopPropagation();
