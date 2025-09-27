@@ -1,5 +1,7 @@
 import { LitElement, html, css } from 'lit';
+import { customElement, property } from "lit/decorators.js";
 
+@customElement('file-drop')
 export class FileDrop extends LitElement {
     static styles = css`
     .drop-zone {
@@ -22,9 +24,8 @@ export class FileDrop extends LitElement {
     }
   `;
 
-    static properties = {
-        label: { type: String }
-    };
+    @property()
+    accessor label
 
     render() {
         return html`
@@ -78,5 +79,3 @@ export class FileDrop extends LitElement {
 
     }
 }
-
-customElements.define('file-drop', FileDrop);

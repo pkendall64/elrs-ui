@@ -172,7 +172,7 @@ export default defineConfig(({ command, mode }) => {
         input: {
           index: path.resolve(__dirname, 'index.html'),
           hardware: path.resolve(__dirname, 'hardware.html'),
-          cw: path.resolve(__dirname, 'cw.html'),
+          // cw: path.resolve(__dirname, 'cw.html'),
           lr1121: path.resolve(__dirname, 'lr1121.html'),
           main: path.resolve(__dirname, 'main.html'),
         }

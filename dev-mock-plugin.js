@@ -107,7 +107,7 @@ export function devMockPlugin() {
         }
         // CW page mock endpoints
         if (url === '/cw' && method === 'GET') {
-          return sendJSON(res, { center: 2440000000, center2: 915000000, radios: 2 })
+          return sendJSON(res, { center: 915000000, center2: 2440000000, radios: 2 })
         }
         if (url === '/cw' && method === 'POST') {
           return sendText(res, 'CW started')
