@@ -4,6 +4,7 @@ import './components/continuous-wave.js'
 import './assets/mui.js'
 import './components/lr1121-updater.js'
 import './components/hardware-layout.js'
+import './components/binding-panel.js'
 import './components/options-panel.js'
 import './components/wifi-panel.js'
 import './components/update-panel.js'
@@ -13,6 +14,24 @@ import './components/buttons-panel.js'
 document.addEventListener('DOMContentLoaded', () => {
     const bodyEl = document.body;
     const sidedrawerEl = _('sidedrawer');
+
+    // App state loaded at startup
+    const appState = { options: null, config: null };
+    let initialDataPromise = null;
+
+    async function loadInitialData() {
+        try {
+            const resp = await fetch('/config');
+            if (!resp.ok) throw new Error('Failed to load config');
+            const data = await resp.json();
+            appState.options = data.options || null;
+            appState.config = data.config || null;
+        } catch (e) {
+            // Leave state nulls on failure; panels that depend on data should handle gracefully
+            // Optionally log
+            console.warn('Startup data load failed:', e);
+        }
+    }
 
     function showSidedrawer() {
         const options = {
@@ -63,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         links.forEach(a => a.classList.remove('active'));
         let id = null;
         switch (route) {
+            case 'binding': id = 'menu-binding'; break;
             case 'options': id = 'menu-options'; break;
             case 'wifi': id = 'menu-wifi'; break;
             case 'update': id = 'menu-update'; break;
@@ -80,6 +100,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderRoute() {
         const route = (location.hash || '#cw').replace('#', '');
         switch (route) {
+            case 'binding': {
+                mainEl.innerHTML = '';
+                const el = document.createElement('binding-panel');
+                if (appState.config) {
+                    // Pass config object to the binding panel as a property
+                    el.data = appState.config;
+                }
+                mainEl.appendChild(el);
+                break;
+            }
             case 'options':
                 mainEl.innerHTML = '<options-panel></options-panel>';
                 break;
@@ -118,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const hwLink = _('menu-hardware');
     const cwLink = _('menu-cw');
     const lrLink = _('menu-lr1121');
+    const bindLink = _('menu-binding');
     const optLink = _('menu-options');
     const wifiLink = _('menu-wifi');
     const updLink = _('menu-update');
@@ -126,6 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hwLink) hwLink.addEventListener('click', () => setTimeout(renderRoute));
     if (cwLink) cwLink.addEventListener('click', () => setTimeout(renderRoute));
     if (lrLink) lrLink.addEventListener('click', () => setTimeout(renderRoute));
+    if (bindLink) optLink.addEventListener('click', () => setTimeout(renderRoute));
     if (optLink) optLink.addEventListener('click', () => setTimeout(renderRoute));
     if (wifiLink) wifiLink.addEventListener('click', () => setTimeout(renderRoute));
     if (updLink) updLink.addEventListener('click', () => setTimeout(renderRoute));
@@ -133,6 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnLink) btnLink.addEventListener('click', () => setTimeout(renderRoute));
 
     window.addEventListener('hashchange', renderRoute);
-    // Initial render
-    renderRoute();
+    // Initial data load then initial render
+    initialDataPromise = loadInitialData().catch(() => {}).then(() => {
+        renderRoute();
+    });
 });
