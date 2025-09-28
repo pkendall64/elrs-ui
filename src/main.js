@@ -35,6 +35,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Simple hash-based routing for panels
     const mainEl = _('main');
 
+    function scrollMainToTop() {
+        const doScroll = (behavior = 'smooth') => {
+            if (typeof window.scrollTo === 'function') {
+                try {
+                    window.scrollTo({ top: 0, left: 0, behavior });
+                } catch (_) {
+                    // Older browsers don't support options object
+                    window.scrollTo(0, 0);
+                }
+            } else {
+                // Fallback if window.scrollTo isn't available
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            }
+        };
+        requestAnimationFrame(() => requestAnimationFrame(() => doScroll('smooth')));
+    }
+
     function renderRoute() {
         const route = (location.hash || '#cw').replace('#', '');
         switch (route) {
@@ -52,6 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try { mui.overlay('off'); } catch (e) {}
         bodyEl.classList.remove('hide-sidedrawer');
         sidedrawerEl.classList.remove('active');
+        // Smoothly scroll the main area to the top on each route change
+        scrollMainToTop();
     }
 
     // Bind menu links (optional: just to ensure overlay closes quickly)
