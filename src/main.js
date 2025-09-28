@@ -4,6 +4,11 @@ import './components/continuous-wave.js'
 import './assets/mui.js'
 import './components/lr1121-updater.js'
 import './components/hardware-layout.js'
+import './components/options-panel.js'
+import './components/wifi-panel.js'
+import './components/update-panel.js'
+import './components/model-panel.js'
+import './components/buttons-panel.js'
 
 document.addEventListener('DOMContentLoaded', () => {
     const bodyEl = document.body;
@@ -58,6 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
         links.forEach(a => a.classList.remove('active'));
         let id = null;
         switch (route) {
+            case 'options': id = 'menu-options'; break;
+            case 'wifi': id = 'menu-wifi'; break;
+            case 'update': id = 'menu-update'; break;
+            case 'model': id = 'menu-model'; break;
+            case 'buttons': id = 'menu-buttons'; break;
             case 'hardware': id = 'menu-hardware'; break;
             case 'lr1121': id = 'menu-lr1121'; break;
             case 'cw':
@@ -70,6 +80,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderRoute() {
         const route = (location.hash || '#cw').replace('#', '');
         switch (route) {
+            case 'options':
+                mainEl.innerHTML = '<options-panel></options-panel>';
+                break;
+            case 'wifi':
+                mainEl.innerHTML = '<wifi-panel></wifi-panel>';
+                break;
+            case 'update':
+                mainEl.innerHTML = '<update-panel></update-panel>';
+                break;
+            case 'model':
+                mainEl.innerHTML = '<model-panel></model-panel>';
+                break;
+            case 'buttons':
+                mainEl.innerHTML = '<buttons-panel></buttons-panel>';
+                break;
             case 'hardware':
                 mainEl.innerHTML = '<hardware-layout></hardware-layout>';
                 break;
@@ -93,9 +118,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const hwLink = _('menu-hardware');
     const cwLink = _('menu-cw');
     const lrLink = _('menu-lr1121');
+    const optLink = _('menu-options');
+    const wifiLink = _('menu-wifi');
+    const updLink = _('menu-update');
+    const modelLink = _('menu-model');
+    const btnLink = _('menu-buttons');
     if (hwLink) hwLink.addEventListener('click', () => setTimeout(renderRoute));
     if (cwLink) cwLink.addEventListener('click', () => setTimeout(renderRoute));
     if (lrLink) lrLink.addEventListener('click', () => setTimeout(renderRoute));
+    if (optLink) optLink.addEventListener('click', () => setTimeout(renderRoute));
+    if (wifiLink) wifiLink.addEventListener('click', () => setTimeout(renderRoute));
+    if (updLink) updLink.addEventListener('click', () => setTimeout(renderRoute));
+    if (modelLink) modelLink.addEventListener('click', () => setTimeout(renderRoute));
+    if (btnLink) btnLink.addEventListener('click', () => setTimeout(renderRoute));
 
     window.addEventListener('hashchange', renderRoute);
     // Initial render
