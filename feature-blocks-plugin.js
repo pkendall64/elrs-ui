@@ -1,6 +1,9 @@
-// HTML Feature Blocks Vite plugin extracted for reuse/maintenance
-// Enables conditional inclusion of HTML sections delimited by
-// <!-- FEATURE:NAME --> ... <!-- /FEATURE:NAME --> markers.
+// HTML & JS Feature Blocks Vite plugin extracted for reuse/maintenance
+// Enables conditional inclusion of sections delimited by feature markers.
+// HTML markers: <!-- FEATURE:NAME --> ... <!-- /FEATURE:NAME -->
+// JS markers (either style):
+//   // FEATURE:NAME            ... (code) ...            // /FEATURE:NAME
+//   /* FEATURE:NAME */         ... (code) ...         /* /FEATURE:NAME */
 // Usage: import { htmlFeatureBlocksPlugin } from './feature-blocks-plugin.js'
 // and register in Vite plugins with the current env passed into the factory.
 
@@ -36,21 +39,67 @@ export function htmlFeatureBlocksPlugin(env) {
   function escapeRegExp(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   }
+
+  function processWithRegex(code, re, openerFactory, closerFactory) {
+    return code.replace(re, (match, rawName) => {
+      const { name, invert } = parseRawName(rawName)
+      const flag = getFlagForName(name, false)
+      const keep = invert ? !flag : flag
+      if (!keep) return ''
+      const esc = escapeRegExp(rawName)
+      const open = openerFactory(esc)
+      const close = closerFactory(esc)
+      return match.replace(open, '').replace(close, '')
+    })
+  }
+
+  function processHtml(html) {
+    const re = /<!--\s*FEATURE:([\w\-.:\s]+)\s*-->[\s\S]*?<!--\s*\/FEATURE:\1\s*-->/gi
+    return processWithRegex(
+      html,
+      re,
+      (esc) => new RegExp(`<!--\\s*FEATURE:${esc}\\s*-->`, 'gi'),
+      (esc) => new RegExp(`<!--\\s*\\/FEATURE:${esc}\\s*-->`, 'gi'),
+    )
+  }
+
+  function processJs(code) {
+    // Block comment markers
+    const blockRe = /\/\*\s*FEATURE:([\w\-.:\s]+)\s*\*\/[\s\S]*?\/\*\s*\/FEATURE:\1\s*\*\//gi
+    code = processWithRegex(
+      code,
+      blockRe,
+      (esc) => new RegExp(`/\\*\\s*FEATURE:${esc}\\s*\\*/`, 'gi'),
+      (esc) => new RegExp(`/\\*\\s*\\/FEATURE:${esc}\\s*\\*/`, 'gi'),
+    )
+    // Line comment markers (must use m flag to anchor at line starts)
+    const lineRe = /^\s*\/\/\s*FEATURE:([\w\-.:\s]+)\s*$[\s\S]*?^\s*\/\/\s*\/FEATURE:\1\s*$/gim
+    code = code.replace(lineRe, (match, rawName) => {
+      const { name, invert } = parseRawName(rawName)
+      const flag = getFlagForName(name, false)
+      const keep = invert ? !flag : flag
+      if (!keep) return ''
+      // Remove only the opening/closing marker lines
+      const esc = escapeRegExp(rawName)
+      const open = new RegExp(`^\\s*\/\/\\s*FEATURE:${esc}\\s*$`, 'gim')
+      const close = new RegExp(`^\\s*\/\/\\s*\\/FEATURE:${esc}\\s*$`, 'gim')
+      return match.replace(open, '').replace(close, '')
+    })
+    return code
+  }
+
   return {
     name: 'html-feature-blocks',
     transformIndexHtml(html) {
-      const re = /<!--\s*FEATURE:([\w\-.:\s]+)\s*-->[\s\S]*?<!--\s*\/FEATURE:\1\s*-->/gi
-      return html.replace(re, (match, rawName) => {
-        const { name, invert } = parseRawName(rawName)
-        const flag = getFlagForName(name, false)
-        const keep = invert ? !flag : flag
-        if (!keep) return ''
-        // Strip the markers but keep inner content when enabled
-        const esc = escapeRegExp(rawName)
-        const open = new RegExp(`<!--\\s*FEATURE:${esc}\\s*-->`, 'gi')
-        const close = new RegExp(`<!--\\s*\\/FEATURE:${esc}\\s*-->`, 'gi')
-        return match.replace(open, '').replace(close, '')
-      })
+      return processHtml(html)
+    },
+    transform(code, id) {
+      if (!id) return null
+      if (/\.(m?js)($|\?)/i.test(id)) {
+        const out = processJs(code)
+        return out === code ? null : { code: out, map: null }
+      }
+      return null
     },
   }
 }
