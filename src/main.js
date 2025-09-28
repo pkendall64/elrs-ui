@@ -53,6 +53,20 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(() => requestAnimationFrame(() => doScroll('smooth')));
     }
 
+    function setActiveMenu(route) {
+        const links = sidedrawerEl.querySelectorAll('a[href^="#"]');
+        links.forEach(a => a.classList.remove('active'));
+        let id = null;
+        switch (route) {
+            case 'hardware': id = 'menu-hardware'; break;
+            case 'lr1121': id = 'menu-lr1121'; break;
+            case 'cw':
+            default: id = 'menu-cw';
+        }
+        const el = id ? document.getElementById(id) : null;
+        if (el) el.classList.add('active');
+    }
+
     function renderRoute() {
         const route = (location.hash || '#cw').replace('#', '');
         switch (route) {
@@ -66,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             default:
                 mainEl.innerHTML = '<continuous-wave></continuous-wave>';
         }
+        setActiveMenu(route);
         // Close sidedrawer after navigation on small screens
         try { mui.overlay('off'); } catch (e) {}
         bodyEl.classList.remove('hide-sidedrawer');
