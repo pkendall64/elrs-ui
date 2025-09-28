@@ -3,6 +3,7 @@ import './components/elrs-logo.js'
 import './components/continuous-wave.js'
 import './assets/mui.js'
 import './components/lr1121-updater.js'
+import './components/hardware-layout.js'
 
 document.addEventListener('DOMContentLoaded', () => {
     const bodyEl = document.body;
@@ -37,6 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderRoute() {
         const route = (location.hash || '#cw').replace('#', '');
         switch (route) {
+            case 'hardware':
+                mainEl.innerHTML = '<hardware-layout></hardware-layout>';
+                break;
             case 'lr1121':
                 mainEl.innerHTML = '<lr1121-updater></lr1121-updater>';
                 break;
@@ -51,8 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Bind menu links (optional: just to ensure overlay closes quickly)
+    const hwLink = _('menu-hardware');
     const cwLink = _('menu-cw');
     const lrLink = _('menu-lr1121');
+    if (hwLink) hwLink.addEventListener('click', () => setTimeout(renderRoute));
     if (cwLink) cwLink.addEventListener('click', () => setTimeout(renderRoute));
     if (lrLink) lrLink.addEventListener('click', () => setTimeout(renderRoute));
 

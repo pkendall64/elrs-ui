@@ -1,7 +1,5 @@
 import { LitElement, html } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
-import './elrs-header.js'
-import './elrs-footer.js'
 import './filedrag.js'
 import '../assets/mui.js'
 import { cuteAlert } from "../assets/libs.js";
