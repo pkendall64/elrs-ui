@@ -2,6 +2,7 @@ import {_, _c} from './assets/libs.js'
 import './components/elrs-logo.js'
 import './components/continuous-wave.js'
 import './assets/mui.js'
+import './components/lr1121-updater.js'
 
 document.addEventListener('DOMContentLoaded', () => {
     const bodyEl = document.body;
@@ -29,4 +30,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     _c('.js-show-sidedrawer').on('click', showSidedrawer);
     _c('.js-hide-sidedrawer').on('click', hideSidedrawer);
+
+    // Simple hash-based routing for panels
+    const mainEl = _('main');
+
+    function renderRoute() {
+        const route = (location.hash || '#cw').replace('#', '');
+        switch (route) {
+            case 'lr1121':
+                mainEl.innerHTML = '<lr1121-updater></lr1121-updater>';
+                break;
+            case 'cw':
+            default:
+                mainEl.innerHTML = '<continuous-wave></continuous-wave>';
+        }
+        // Close sidedrawer after navigation on small screens
+        try { mui.overlay('off'); } catch (e) {}
+        bodyEl.classList.remove('hide-sidedrawer');
+        sidedrawerEl.classList.remove('active');
+    }
+
+    // Bind menu links (optional: just to ensure overlay closes quickly)
+    const cwLink = _('menu-cw');
+    const lrLink = _('menu-lr1121');
+    if (cwLink) cwLink.addEventListener('click', () => setTimeout(renderRoute));
+    if (lrLink) lrLink.addEventListener('click', () => setTimeout(renderRoute));
+
+    window.addEventListener('hashchange', renderRoute);
+    // Initial render
+    renderRoute();
 });

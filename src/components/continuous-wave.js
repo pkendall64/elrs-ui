@@ -29,9 +29,8 @@ export class ContinuousWave extends LitElement {
         if(this.data)
             return html`
             <link rel="stylesheet" href="src/assets/mui.css">
+            <div class="mui-panel mui--text-title">Continuous Wave Generation</div>
             <div class="mui-panel">
-                <div class="mui--text-display1">Continuous Wave Generation</div>
-                <div class="mui-divider"></div>
                 Put the Semtech chip into a mode where it transmits a continuous wave with a center
                 frequency of ${(this.cwFreq / 1000000)}</span> MHz.
                 <br>
