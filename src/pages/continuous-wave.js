@@ -1,33 +1,26 @@
 import {html, LitElement} from 'lit';
-import FEATURES from "../features.js";
 import {customElement, query, state} from 'lit/decorators.js';
+import FEATURES from "../features.js";
 
 @customElement('continuous-wave')
 export class ContinuousWave extends LitElement {
-    @state()
-    accessor data = undefined;
+    @query('#optionsSetSubGHz') accessor optionsSetSubGHz;
+    @query('#optionsRadios2') accessor optionsRadios2;
 
-    @state()
-    accessor started = false;
-
-    @query('#optionsSetSubGHz')
-    accessor optionsSetSubGHz;
-
-    @query('#optionsRadios2')
-    accessor optionsRadios2;
-
-    @state()
-    accessor result = {}
-
-    @state()
-    accessor cwFreq;
+    @state() accessor data = undefined;
+    @state() accessor started = false;
+    @state() accessor result = {}
+    @state() accessor cwFreq;
 
     _text = "Loading...";
+
+    createRenderRoot() {
+        return this;
+    }
 
     render() {
         if (this.data)
             return html`
-                <link rel="stylesheet" href="src/assets/mui.css">
                 <div class="mui-panel mui--text-title">Continuous Wave Generation</div>
                 <div class="mui-panel">
                     Put the Semtech chip into a mode where it transmits a continuous wave with a center

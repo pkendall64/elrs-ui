@@ -1,29 +1,24 @@
 import {html, LitElement} from 'lit';
 import {customElement, query, state} from 'lit/decorators.js';
-import '../components/filedrag.js'
 import '../assets/mui.js'
+import '../components/filedrag.js'
 import {cuteAlert} from "../assets/libs.js";
 
 @customElement('lr1121-updater')
 export class LR1121Updater extends LitElement {
-    @state()
-    accessor data = undefined;
+    @query('#radio2') accessor radio2;
 
-    @state()
-    accessor status = '';
+    @state() accessor data = undefined;
+    @state() accessor status = '';
+    @state() accessor progress = 0;
+    @state() accessor manual = false;
 
-    @state()
-    accessor progress = 0;
-
-    @state()
-    accessor manual = false;
-
-    @query('#radio2')
-    accessor radio2;
+    createRenderRoot() {
+        return this;
+    }
 
     render() {
         return html`
-            <link rel="stylesheet" href="src/assets/mui.css">
             <div class="mui-panel mui--text-title">LR1121 Firmware Flashing</div>
             <div class="mui-panel" style="display: ${this.manual ? 'block' : 'none'}; background-color: #FFC107;">
                 LR1121 firmware has been manually flashed before, to revert to the ExpressLRS provided version you can

@@ -1,15 +1,12 @@
-import '../assets/mui.js';
-import FEATURES from "../features.js";
 import {html, LitElement} from "lit";
 import {customElement, property, query, state} from "lit/decorators.js";
+import FEATURES from "../features.js";
+import '../assets/mui.js';
 import {cuteAlert} from "../assets/libs.js";
-import { calcMD5 } from "../utils/md5.js";
+import {calcMD5} from "../utils/md5.js";
 
 @customElement('binding-panel')
 class BindingPanel extends LitElement {
-
-    createRenderRoot() { return this; }
-
     @property() accessor config
     @property() accessor options
 
@@ -23,7 +20,11 @@ class BindingPanel extends LitElement {
     originalUIDType = ''
     originalUID = []
 
-    firstUpdated() {
+    createRenderRoot() {
+        return this;
+    }
+
+    firstUpdated(_changedProperties) {
         this.uid = this.config.uid;
         this.originalUID = this.config.uid;
         this.originalUIDType = (this.config && this.config.uidtype) ? this.config.uidtype : '';
@@ -73,11 +74,13 @@ class BindingPanel extends LitElement {
                                 <span class="badge" id="uid-type"
                                       style="background-color: ${this.uidData.bg}; color: ${this.uidData.fg}">${this.uidData.uidtype}</span>
                             ` : ''}
-                            <input size='40' id='uid' name='uid' type='text' class='array' readonly value="${this.uid}"/>
+                            <input size='40' id='uid' name='uid' type='text' class='array' readonly
+                                   value="${this.uid}"/>
                         </div>
                     ` : ''}
                     <button class="mui-btn mui-btn--primary"
-                            ?disabled=${(this.vbind?.value!=='1') && this.uidData.uidtype !== 'Modified'} @click="${this.submitOptions}">Save
+                            ?disabled=${(this.vbind?.value !== '1') && this.uidData.uidtype !== 'Modified'}
+                            @click="${this.submitOptions}">Save
                     </button>
                 </form>
             </div>

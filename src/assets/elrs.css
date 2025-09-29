@@ -63,34 +63,11 @@ body, input, select, textarea {
 
 /*==========================*/
 
-.filedrag {
-	display: none;
-	font-weight: bold;
-	text-align: center;
-	padding: 1em 0;
-	margin: 1em 0;
-	color: #555;
-	border: 2px dashed #555;
-	border-radius: 7px;
-	cursor: default;
-}
-
-.filedrag.hover {
-	color: #f00;
-    border-radius: 7px;
-    cursor: default;
-	border-color: #f00;
-	border-style: solid;
-	box-shadow: inset 0 3px 4px #888;
-}
-
-/*==========================*/
-
 /* Autocomplete */
 
 .autocomplete {
 	position: relative;
-	display: inline-block;
+	/*display: inline-block;*/ /*PAK check auto complete*/
 }
 
 .autocomplete-items {
@@ -135,7 +112,7 @@ body, input, select, textarea {
 	background-repeat: no-repeat;
 }
 
-  /* Safari */
+/* Safari */
 @-webkit-keyframes spin {
 	0% { -webkit-transform: rotate(0deg); }
 	100% { -webkit-transform: rotate(360deg); }

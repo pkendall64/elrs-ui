@@ -191,6 +191,6 @@ button {
     height: 0;
     border-style: solid;
     border-width: 12px 12px 12px 0; /* top right bottom left */
-    border-color: transparent #eee transparent transparent; /* left-pointing triangle, color matches main background */
+    border-color: transparent #2196F3 transparent transparent; /* left-pointing triangle */
     z-index: 1; /* overlay on top of the menu item */
 }

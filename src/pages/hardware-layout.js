@@ -1,8 +1,8 @@
 import {css, html, LitElement} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
-import '../components/filedrag.js'
 import '../assets/mui.js'
 import {cuteAlert} from '../assets/libs.js'
+import '../components/filedrag.js'
 import HARDWARE_SCHEMA from '../utils/hardware-schema.js'
 
 @customElement('hardware-layout')
@@ -62,6 +62,10 @@ export class HardwareLayout extends LitElement {
     // Data-driven schema for table rows and sections
     static SCHEMA = HARDWARE_SCHEMA;
 
+    createRenderRoot() {
+        return this;
+    }
+
     _renderIcon(icon) {
         if (!icon) return html``;
         if (icon === 'input-output') {
@@ -90,8 +94,6 @@ export class HardwareLayout extends LitElement {
 
     render() {
         return html`
-            <link rel="stylesheet" href="./src/assets/elrs.css"/>
-            <link rel="stylesheet" href="./src/assets/mui.css"/>
             <div class="mui-panel mui--text-title">Hardware Layout</div>
             <div id="custom_config" class="mui-panel"
                  style="display:${this.customised ? 'block' : 'none'}; background-color: #FFC107;">
