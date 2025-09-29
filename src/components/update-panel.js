@@ -2,8 +2,8 @@ import '../assets/mui.js';
 import './filedrag.js';
 
 class UpdatePanel extends HTMLElement {
-  connectedCallback() {
-    this.innerHTML = `
+    connectedCallback() {
+        this.innerHTML = `
       <div class="mui-panel">
         <h2>Firmware Update</h2>
         Select the correct <strong>firmware.bin</strong> for your platform otherwise a bad flash may occur.
@@ -15,7 +15,7 @@ class UpdatePanel extends HTMLElement {
         <progress id="progressBar" value="0" max="100" style="width:100%;"></progress>
       </div>
     `;
-  }
+    }
 }
 
 customElements.define('update-panel', UpdatePanel);

@@ -1,8 +1,8 @@
 import '../assets/mui.js';
 
 class ButtonsPanel extends HTMLElement {
-  connectedCallback() {
-    this.innerHTML = `
+    connectedCallback() {
+        this.innerHTML = `
       <div class="mui-panel">
         <h2>Button Actions</h2>
         Specify which actions to perform when clicking or long pressing module buttons.
@@ -23,7 +23,7 @@ class ButtonsPanel extends HTMLElement {
         </form>
       </div>
     `;
-  }
+    }
 }
 
 customElements.define('buttons-panel', ButtonsPanel);

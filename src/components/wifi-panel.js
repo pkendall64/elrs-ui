@@ -1,8 +1,8 @@
 import '../assets/mui.js';
 
 class WifiPanel extends HTMLElement {
-  connectedCallback() {
-    this.innerHTML = `
+    connectedCallback() {
+        this.innerHTML = `
       <div class="mui-panel">
         <h2 id="apmode" style="display:none;">Currently in Access Point mode</h2>
         <h2 id="stamode" style="display:none;">Current Home network: <span id="ssid"></span></h2>
@@ -47,7 +47,7 @@ class WifiPanel extends HTMLElement {
         <a id="connect" href="#">Connect to Home network: <span id="homenet"></span></a>
       </div>
     `;
-  }
+    }
 }
 
 customElements.define('wifi-panel', WifiPanel);

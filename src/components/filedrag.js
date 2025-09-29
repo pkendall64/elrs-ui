@@ -1,28 +1,28 @@
-import { LitElement, html, css } from 'lit';
-import { customElement, property } from "lit/decorators.js";
+import {css, html, LitElement} from 'lit';
+import {customElement, property} from "lit/decorators.js";
 
 @customElement('file-drop')
 export class FileDrop extends LitElement {
     static styles = css`
-    .drop-zone {
-        font-weight: bold;
-        text-align: center;
-        padding: 1em 0;
-        margin: 1em 0;
-        color: #555;
-        border: 2px dashed #555;
-        border-radius: 7px;
-        cursor: pointer;
-      transition: all 0.2s ease-in-out;
-    }
+        .drop-zone {
+            font-weight: bold;
+            text-align: center;
+            padding: 1em 0;
+            margin: 1em 0;
+            color: #555;
+            border: 2px dashed #555;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
 
-    .drop-zone.dragover {
-        color: #f00;
-        border-color: #f00;
-        border-style: solid;
-        box-shadow: inset 0 3px 4px #888;
-    }
-  `;
+        .drop-zone.dragover {
+            color: #f00;
+            border-color: #f00;
+            border-style: solid;
+            box-shadow: inset 0 3px 4px #888;
+        }
+    `;
 
     @property()
     accessor label
@@ -38,14 +38,14 @@ export class FileDrop extends LitElement {
                 </label>
             </button>
             <div
-        class="drop-zone"
-        @dragover=${this._handleDragOver}
-        @dragleave=${this._handleDragLeave}
-        @drop=${this._handleDrop}
-      >
-          <slot></slot>
-      </div>
-    `;
+                    class="drop-zone"
+                    @dragover=${this._handleDragOver}
+                    @dragleave=${this._handleDragLeave}
+                    @drop=${this._handleDrop}
+            >
+                <slot></slot>
+            </div>
+        `;
     }
 
     _handleDragOver(event) {
@@ -71,7 +71,7 @@ export class FileDrop extends LitElement {
         if (files.length) {
             // Dispatch a custom 'file-drop' event with the files in the detail property.
             this.dispatchEvent(new CustomEvent('file-drop', {
-                detail: { files },
+                detail: {files},
                 bubbles: true,
                 composed: true
             }));

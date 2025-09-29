@@ -1,11 +1,13 @@
-import { LitElement, html } from 'lit'
+import {html, LitElement} from 'lit'
 
 // Render into light DOM so existing global CSS (MUI) applies
 export class ElrsFooter extends LitElement {
-  createRenderRoot() { return this }
+    createRenderRoot() {
+        return this
+    }
 
-  render() {
-    return html`
+    render() {
+        return html`
 <footer>
   <div class="mui-container-fluid">
     <div class="mui-row">
@@ -43,7 +45,7 @@ export class ElrsFooter extends LitElement {
   </div>
 </footer>
     `
-  }
+    }
 }
 
 customElements.define('elrs-footer', ElrsFooter)

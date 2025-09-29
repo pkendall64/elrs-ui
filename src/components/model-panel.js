@@ -1,8 +1,8 @@
 import '../assets/mui.js';
 
 class ModelPanel extends HTMLElement {
-  connectedCallback() {
-    this.innerHTML = `
+    connectedCallback() {
+        this.innerHTML = `
       <div class="mui-panel">
         <div id="model_tab">
           <h2>PWM Output</h2>
@@ -145,7 +145,7 @@ class ModelPanel extends HTMLElement {
         <a id="reset-model" href="#">Reset all model settings to defaults (includes binding).</a>
       </div>
     `;
-  }
+    }
 }
 
 customElements.define('model-panel', ModelPanel);

@@ -1,8 +1,8 @@
-import { LitElement, html } from 'lit';
-import { customElement, query, state } from 'lit/decorators.js';
+import {html, LitElement} from 'lit';
+import {customElement, query, state} from 'lit/decorators.js';
 import './filedrag.js'
 import '../assets/mui.js'
-import { cuteAlert } from "../assets/libs.js";
+import {cuteAlert} from "../assets/libs.js";
 
 @customElement('lr1121-updater')
 export class LR1121Updater extends LitElement {
@@ -26,7 +26,8 @@ export class LR1121Updater extends LitElement {
             <link rel="stylesheet" href="src/assets/mui.css">
             <div class="mui-panel mui--text-title">LR1121 Firmware Flashing</div>
             <div class="mui-panel" style="display: ${this.manual ? 'block' : 'none'}; background-color: #FFC107;">
-                LR1121 firmware has been manually flashed before, to revert to the ExpressLRS provided version you can click the button below.<br>
+                LR1121 firmware has been manually flashed before, to revert to the ExpressLRS provided version you can
+                click the button below.<br>
                 <button class="mui-btn mui-btn--small" @click=${this._reset}>Reset and reboot</button>
             </div>
             <div class="mui-panel">
@@ -68,12 +69,28 @@ export class LR1121Updater extends LitElement {
         return html`
             <table class="mui-table mui-table--bordered">
                 <thead>
-                    <tr><th>Parameter</th><th>Radio 1</th><th>Radio 2</th></tr>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Radio 1</th>
+                    <th>Radio 2</th>
+                </tr>
                 </thead>
                 <tbody>
-                <tr><td>Type</td><td><span>${this._dec2hex(r1?.type, 2)}</span></td><td><span>${r2 ? this._dec2hex(r2.type, 2) : ''}</span></td></tr>
-                <tr><td>Hardware</td><td><span>${this._dec2hex(r1?.hardware, 2)}</span></td><td><span>${r2 ? this._dec2hex(r2.hardware, 2) : ''}</span></td></tr>
-                <tr><td>Firmware</td><td><span>${this._dec2hex(r1?.firmware, 4)}</span></td><td><span>${r2 ? this._dec2hex(r2.firmware, 4) : ''}</span></td></tr>
+                <tr>
+                    <td>Type</td>
+                    <td><span>${this._dec2hex(r1?.type, 2)}</span></td>
+                    <td><span>${r2 ? this._dec2hex(r2.type, 2) : ''}</span></td>
+                </tr>
+                <tr>
+                    <td>Hardware</td>
+                    <td><span>${this._dec2hex(r1?.hardware, 2)}</span></td>
+                    <td><span>${r2 ? this._dec2hex(r2.hardware, 2) : ''}</span></td>
+                </tr>
+                <tr>
+                    <td>Firmware</td>
+                    <td><span>${this._dec2hex(r1?.firmware, 4)}</span></td>
+                    <td><span>${r2 ? this._dec2hex(r2.firmware, 4) : ''}</span></td>
+                </tr>
                 </tbody>
             </table>
         `;
@@ -92,7 +109,8 @@ export class LR1121Updater extends LitElement {
     _reset() {
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.open('POST', '/reset?lr1121', true);
-        xmlhttp.onreadystatechange = () => {};
+        xmlhttp.onreadystatechange = () => {
+        };
         xmlhttp.send();
     }
 
@@ -118,7 +136,7 @@ export class LR1121Updater extends LitElement {
     _uploadFile(file) {
         try {
             // Show overlay
-            mui.overlay('on', { keyboard: false, static: true });
+            mui.overlay('on', {keyboard: false, static: true});
             const ajax = new XMLHttpRequest();
             ajax.upload.addEventListener('progress', (event) => this._progressHandler(event), false);
             ajax.addEventListener('load', (event) => this._completeHandler(event), false);
@@ -179,7 +197,10 @@ export class LR1121Updater extends LitElement {
 
     _showAlert(type, title, message) {
         this._resetProgress();
-        try { mui.overlay('off'); } catch(e) {}
-        return cuteAlert({ type, title, message });
+        try {
+            mui.overlay('off');
+        } catch (e) {
+        }
+        return cuteAlert({type, title, message});
     }
 }

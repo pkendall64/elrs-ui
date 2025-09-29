@@ -1,12 +1,12 @@
 import '../assets/mui.js';
 
 class OptionsPanel extends HTMLElement {
-  connectedCallback() {
-    this.render();
-  }
+    connectedCallback() {
+        this.render();
+    }
 
-  render() {
-    this.innerHTML = `
+    render() {
+        this.innerHTML = `
             <div class="mui-panel">
                 <h2>Runtime Options</h2>
                 This form <b>overrides</b> the options provided when the firmware was flashed. These changes will persist across reboots, but <b>will be reset</b> when the firmware is reflashed.
@@ -111,7 +111,7 @@ class OptionsPanel extends HTMLElement {
             </div>
             <!-- /FEATURE:IS_TX -->
     `;
-  }
+    }
 }
 
 customElements.define('options-panel', OptionsPanel);
