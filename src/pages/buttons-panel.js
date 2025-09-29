@@ -1,12 +1,18 @@
 import '../assets/mui.js';
+import {html, LitElement} from "lit";
+import {customElement} from "lit/decorators.js";
 
-class ButtonsPanel extends HTMLElement {
-    connectedCallback() {
-        this.innerHTML = `
+@customElement('buttons-panel')
+class ButtonsPanel extends LitElement {
+    createRenderRoot() { return this; }
+
+    render() {
+        return html`
+        <div class="mui-panel mui--text-title">Button & Actions</div>
       <div class="mui-panel">
-        <h2>Button Actions</h2>
+        <p>
         Specify which actions to perform when clicking or long pressing module buttons.
-        <br/><br/>
+        </p>
         <form class="mui-form" id='button_actions'>
           <table class="mui-table">
             <tbody id="button-actions"></tbody>
@@ -25,5 +31,3 @@ class ButtonsPanel extends HTMLElement {
     `;
     }
 }
-
-customElements.define('buttons-panel', ButtonsPanel);

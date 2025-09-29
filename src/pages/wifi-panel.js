@@ -1,16 +1,22 @@
 import '../assets/mui.js';
+import {html, LitElement} from "lit";
+import {customElement} from "lit/decorators.js";
 
-class WifiPanel extends HTMLElement {
-    connectedCallback() {
-        this.innerHTML = `
+@customElement('wifi-panel')
+class WifiPanel extends LitElement {
+    createRenderRoot() { return this; }
+
+    render() {
+        return html`
+            <div class="mui-panel mui--text-title">WiFi Configuration</div>
       <div class="mui-panel">
         <h2 id="apmode" style="display:none;">Currently in Access Point mode</h2>
         <h2 id="stamode" style="display:none;">Current Home network: <span id="ssid"></span></h2>
+        <p>
         Here you can join a network and it will be saved as your Home network. When you enable WiFi in range of your Home network,
         ExpressLRS will automatically connect to it. In Access Point (AP) mode, the network name is ExpressLRS TX or ExpressLRS RX
         with password "expresslrs".
-        <br/>
-        <br/>
+        </p>
         <form id="sethome" method="POST" autocomplete="off" class="mui-form">
           <div class="mui-radio">
             <input type="radio" id="nt0" name="networktype" value="0" checked>
@@ -49,5 +55,3 @@ class WifiPanel extends HTMLElement {
     `;
     }
 }
-
-customElements.define('wifi-panel', WifiPanel);

@@ -1,34 +1,17 @@
 import '../assets/mui.js';
+import {html, LitElement} from "lit";
+import {customElement} from "lit/decorators.js";
 
-class OptionsPanel extends HTMLElement {
-    connectedCallback() {
-        this.render();
-    }
+@customElement('options-panel')
+class OptionsPanel extends LitElement {
+    createRenderRoot() { return this; }
 
     render() {
-        this.innerHTML = `
+        return html`
+            <div class="mui-panel mui--text-title">Runtime Options</div>
             <div class="mui-panel">
-                <h2>Runtime Options</h2>
-                This form <b>overrides</b> the options provided when the firmware was flashed. These changes will persist across reboots, but <b>will be reset</b> when the firmware is reflashed.
-                <!-- FEATURE:IS_TX -->
-                Note: The Binding phrase is <b>not</b> remembered, it is a temporary field used to generate the binding UID.
-                <br/><br/>
-                <div class="mui-textfield">
-                    <input type="text" id="phrase" name="phrase" placeholder="Binding Phrase" />
-                    <label for="phrase">Binding Phrase</label>
-                </div>
-                <!-- /FEATURE:IS_TX -->
-                <!-- FEATURE:NOT IS_TX -->
-                <br/><br/>
-                <!-- /FEATURE:NOT IS_TX -->
+                <p>This form <b>overrides</b> the options provided when the firmware was flashed. These changes will persist across reboots, but <b>will be reset</b> when the firmware is reflashed.</p>
                 <form id='upload_options' method='POST' action="/options">
-                    <!-- FEATURE:IS_TX -->
-                    <div class="mui-textfield">
-                        <label for='uid'><span id="uid-text"></span></label>
-                        <span class="badge" id="uid-type"></span>
-                        <input size='40' id='uid' name='uid' type='text' class='array' readonly/>
-                    </div>
-                    <!-- /FEATURE:IS_TX -->
                     <!-- FEATURE:HAS_SUBGHZ -->
                     <div class="mui-select">
                         <select id='domain' name='domain'>
@@ -83,14 +66,35 @@ class OptionsPanel extends HTMLElement {
                         <input id='dji-permanently-armed' name='dji-permanently-armed' type='checkbox'/>
                         <label for="dji-permanently-armed">Permanently arm DJI air units</label>
                     </div>
+                    <h2>Model Match</h2>
+                    Specify the 'Receiver' number in OpenTX/EdgeTX model setup page and turn on the 'Model Match'
+                    in the ExpressLRS Lua script for that model. 'Model Match' is between 0 and 63 inclusive.
+                    <br/><br/>
+                    <div class="mui-checkbox">
+                        <input id='model-match' name='model-match' type='checkbox'/>
+                        <label for="model-match">Enable Model Match</label>
+                    </div>
+                    <div class="mui-textfield" id="modelNum">
+                        <input id='modelid' type='text' name='modelid' value="255" required/>
+                        <label for="modelid">Model ID</label>
+                    </div>
+                    <h2>Force telemetry off</h2>
+                    When running multiple receivers simultaneously from the same TX (to increase the number of PWM servo outputs), there can be at most one receiver with telemetry enabled.<br>Enable this option to ignore the "Telem Ratio" setting on the TX and never send telemetry from this receiver.
+                    <br/><br/>
+                    <div class="mui-checkbox">
+                        <input id='force-tlm' name='force-tlm' type='checkbox' value="1"/>
+                        <label for="force-tlm">Force telemetry OFF on this receiver</label>
+                    </div>
                     <!-- /FEATURE:NOT IS_TX -->
+
+                    <input type="hidden" id="flash-discriminator" name="flash-discriminator"/>
+                    <input type="hidden" id="wifi-ssid" name="wifi-ssid"/>
+                    <input type="hidden" id='wifi-password' name='wifi-password'/>
+                    
                     <button id='submit-options' class="mui-btn mui-btn--primary" disabled>Save</button>
                     <button id="reset-options" class="mui-btn mui-btn--small mui-btn--danger" style="display: none;">
                         Reset runtime options to defaults
                     </button>
-                    <input type="hidden" id="flash-discriminator" name="flash-discriminator"/>
-                    <input type="hidden" id="wifi-ssid" name="wifi-ssid"/>
-                    <input type="hidden" id='wifi-password' name='wifi-password'/>
                 </form>
             </div>
             <!-- FEATURE:IS_TX -->
@@ -113,5 +117,3 @@ class OptionsPanel extends HTMLElement {
     `;
     }
 }
-
-customElements.define('options-panel', OptionsPanel);
