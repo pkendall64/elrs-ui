@@ -1,36 +1,15 @@
-import {css, html, LitElement} from 'lit';
+import {css, html, LitElement, unsafeCSS} from 'lit';
 import {customElement, property} from "lit/decorators.js";
+import muiCss from '../assets/mui.css?inline'
+import elrsCss from '../assets/elrs.css?inline'
 
 @customElement('file-drop')
 export class FileDrop extends LitElement {
-    static styles = css`
-        .drop-zone {
-            font-weight: bold;
-            text-align: center;
-            padding: 1em 0;
-            margin: 1em 0;
-            color: #555;
-            border: 2px dashed #555;
-            border-radius: 7px;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-        }
-
-        .drop-zone.dragover {
-            color: #f00;
-            border-color: #f00;
-            border-style: solid;
-            box-shadow: inset 0 3px 4px #888;
-        }
-    `;
-
     @property()
     accessor label
 
     render() {
         return html`
-            <link rel="stylesheet" href="./src/assets/elrs.css">
-            <link rel="stylesheet" href="./src/assets/mui.css">
             <button class="mui-btn mui-btn--small mui-btn--primary upload">
                 <label>
                     ${this.label}
@@ -78,4 +57,29 @@ export class FileDrop extends LitElement {
         }
 
     }
+
+    static styles = [
+        css`${unsafeCSS(muiCss)}`,
+        css`${unsafeCSS(elrsCss)}`,
+        css`
+        .drop-zone {
+            font-weight: bold;
+            text-align: center;
+            padding: 1em 0;
+            margin: 1em 0;
+            color: #555;
+            border: 2px dashed #555;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .drop-zone.dragover {
+            color: #f00;
+            border-color: #f00;
+            border-style: solid;
+            box-shadow: inset 0 3px 4px #888;
+        }
+    `
+    ];
 }

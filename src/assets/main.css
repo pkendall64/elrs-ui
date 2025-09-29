@@ -194,3 +194,24 @@ button {
     border-color: transparent #2196F3 transparent transparent; /* left-pointing triangle */
     z-index: 1; /* overlay on top of the menu item */
 }
+
+/**
+ * Route transition CSS
+ */
+#main {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+/* fade out the old view */
+#main.route-fade-out {
+    opacity: 0;
+    transform: translateY(6px);
+}
+
+/* optional: prepare fade-in start state (kept for robustness) */
+#main.route-fade-in {
+    opacity: 0;
+    transform: translateY(6px);
+}

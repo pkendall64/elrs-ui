@@ -97,50 +97,79 @@ document.addEventListener('DOMContentLoaded', () => {
         if (el) el.classList.add('active');
     }
 
-    function renderRoute() {
-        const route = (location.hash || '#cw').replace('#', '');
+    function buildRouteContent(route) {
         switch (route) {
             case 'binding': {
-                mainEl.innerHTML = '';
                 const el = document.createElement('binding-panel');
                 if (appState.config) {
                     // Pass config object to the binding panel as a property
                     el.config = appState.config;
                     el.options = appState.options;
                 }
-                mainEl.appendChild(el);
-                break;
+                return el;
             }
             case 'options':
-                mainEl.innerHTML = '<options-panel></options-panel>';
-                break;
+                return '<options-panel></options-panel>';
             case 'wifi':
-                mainEl.innerHTML = '<wifi-panel></wifi-panel>';
-                break;
+                return '<wifi-panel></wifi-panel>';
             case 'update':
-                mainEl.innerHTML = '<update-panel></update-panel>';
-                break;
+                return '<update-panel></update-panel>';
             case 'model':
-                mainEl.innerHTML = '<model-panel></model-panel>';
-                break;
+                return '<model-panel></model-panel>';
             case 'buttons':
-                mainEl.innerHTML = '<buttons-panel></buttons-panel>';
-                break;
+                return '<buttons-panel></buttons-panel>';
             case 'hardware':
-                mainEl.innerHTML = '<hardware-layout></hardware-layout>';
-                break;
+                return '<hardware-layout></hardware-layout>';
             case 'lr1121':
-                mainEl.innerHTML = '<lr1121-updater></lr1121-updater>';
-                break;
+                return '<lr1121-updater></lr1121-updater>';
             case 'cw':
             default:
-                mainEl.innerHTML = '<continuous-wave></continuous-wave>';
+                return '<continuous-wave></continuous-wave>';
         }
+    }
+
+    function replaceMainWithTransition(newContent) {
+        return new Promise(resolve => {
+            const onEnd = () => {
+                mainEl.removeEventListener('transitionend', onEnd);
+                // swap content
+                if (typeof newContent === 'string') {
+                    mainEl.innerHTML = newContent;
+                } else if (newContent instanceof Node) {
+                    mainEl.innerHTML = '';
+                    mainEl.appendChild(newContent);
+                } else {
+                    mainEl.innerHTML = '';
+                }
+                // prepare for fade-in start state
+                mainEl.classList.add('route-fade-in');
+                // force reflow then remove to animate to default
+                requestAnimationFrame(() => {
+                    mainEl.classList.remove('route-fade-out');
+                    requestAnimationFrame(() => {
+                        mainEl.classList.remove('route-fade-in');
+                        resolve();
+                    });
+                });
+            };
+            // start fade-out
+            mainEl.addEventListener('transitionend', onEnd);
+            mainEl.classList.add('route-fade-out');
+            // Fallback timeout in case transitionend doesn't fire
+            setTimeout(onEnd, 220);
+        });
+    }
+
+    async function renderRoute() {
+        const route = (location.hash || '#cw').replace('#', '');
         setActiveMenu(route);
         // Close sidedrawer after navigation on small screens
         try { mui.overlay('off'); } catch (e) {}
         bodyEl.classList.remove('hide-sidedrawer');
         sidedrawerEl.classList.remove('active');
+
+        const content = buildRouteContent(route);
+        await replaceMainWithTransition(content);
         // Smoothly scroll the main area to the top on each route change
         scrollMainToTop();
     }
@@ -158,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hwLink) hwLink.addEventListener('click', () => setTimeout(renderRoute));
     if (cwLink) cwLink.addEventListener('click', () => setTimeout(renderRoute));
     if (lrLink) lrLink.addEventListener('click', () => setTimeout(renderRoute));
-    if (bindLink) optLink.addEventListener('click', () => setTimeout(renderRoute));
+    if (bindLink) bindLink.addEventListener('click', () => setTimeout(renderRoute));
     if (optLink) optLink.addEventListener('click', () => setTimeout(renderRoute));
     if (wifiLink) wifiLink.addEventListener('click', () => setTimeout(renderRoute));
     if (updLink) updLink.addEventListener('click', () => setTimeout(renderRoute));

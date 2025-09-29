@@ -170,7 +170,7 @@ export default defineConfig(({ command, mode }) => {
     build: {
       rollupOptions: {
         input: {
-          index: path.resolve(__dirname, 'index.html'),
+          // index: path.resolve(__dirname, 'index.html'),
           main: path.resolve(__dirname, 'main.html'),
         }
       }
