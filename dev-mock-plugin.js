@@ -15,22 +15,26 @@ export function devMockPlugin() {
   // Basic stub data used by multiple endpoints
   const stubState = {
     options: {
-      'wifi-on-interval': -1,
-      'rcvr-uart-baud': '420000',
-      'customised': false,
-      'wifi-ssid': 'MockHomeWiFi',
-      'fan-runtime': 10,
-      'tlm-interval': 200,
-      'is-airport': false,
-      'airport-uart-baud': '420000',
-      'lock-on-first-connection': false,
-      'dji-permanently-armed': false,
+        "uid": [1,2,3,4,5,6],   // this is the 'flashed' UID and may be empty if using traditional binding on an RX.
+        "tlm-interval": 240,
+        "fan-runtime": 30,
+        "no-sync-on-arm": false,
+        "uart-inverted": true,
+        "unlock-higher-power": false,
+        "is-airport": true,
+        "rcvr-uart-baud": 420000,
+        "rcvr-invert-tx": false,
+        "lock-on-first-connection": true,
+        "domain": 1,
+        "wifi-on-interval": 60,
+        "wifi-password": "w1f1-pAssw0rd",
+        "wifi-ssid": "network-ssid"
     },
     config: {
       product_name: 'ELRS Mock Device',
       reg_domain: 'EU868',
-      uid: [0, 0, 0, 0, 0, 0],
-      uidtype: 'Volatile',
+      uid: [5,4,3,2,1,0],  // current UID
+      uidtype: 'Flashed',
       mode: 'AP',
       ssid: 'ExpressLRS TX',
       modelid: 255,

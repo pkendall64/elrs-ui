@@ -105,7 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const el = document.createElement('binding-panel');
                 if (appState.config) {
                     // Pass config object to the binding panel as a property
-                    el.data = appState.config;
+                    el.config = appState.config;
+                    el.options = appState.options;
                 }
                 mainEl.appendChild(el);
                 break;
