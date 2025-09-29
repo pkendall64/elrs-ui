@@ -8,6 +8,8 @@ import { calcMD5 } from "../utils/md5.js";
 @customElement('binding-panel')
 class BindingPanel extends LitElement {
 
+    createRenderRoot() { return this; }
+
     @property() accessor config
     @property() accessor options
 
@@ -34,8 +36,6 @@ class BindingPanel extends LitElement {
 
     render() {
         return html`
-            <link rel="stylesheet" href="src/assets/elrs.css">
-            <link rel="stylesheet" href="src/assets/mui.css">
             <div class="mui-panel mui--text-title">Binding</div>
             <div class="mui-panel">
                 <form id='upload_options'>
