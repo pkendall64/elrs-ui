@@ -1,7 +1,8 @@
 import {LitElement, html} from 'lit';
-import './elrs-logo.js';
+import {customElement, query} from "lit/decorators.js";
 import '../assets/mui.js';
 
+import './elrs-logo.js';
 import '../pages/continuous-wave.js';
 import '../pages/lr1121-updater.js';
 import '../pages/hardware-layout.js';
@@ -11,7 +12,6 @@ import '../pages/wifi-panel.js';
 import '../pages/update-panel.js';
 import '../pages/model-panel.js';
 import '../pages/buttons-panel.js';
-import {customElement, query} from "lit/decorators.js";
 
 @customElement('elrs-app')
 export class ElrsApp extends LitElement {
@@ -21,7 +21,10 @@ export class ElrsApp extends LitElement {
     constructor() {
         super();
         this.appState = {options: null, config: null};
+        // Bind methods used as callbacks to preserve `this`
         this.renderRoute = this.renderRoute.bind(this);
+        this.showSidedrawer = this.showSidedrawer.bind(this);
+        this.hideSidedrawer = this.hideSidedrawer.bind(this);
     }
 
     createRenderRoot() {
@@ -58,17 +61,13 @@ export class ElrsApp extends LitElement {
                 </ul>
             </div>
             <header id="header">
-                <div class="mui-appbar mui--appbar-line-height">
-                    <div class="mui--align-middle">
-                        <span class="mui--appbar-height">
-                          <a class="sidedrawer-toggle mui--visible-xs-inline-block mui--visible-sm-inline-block js-show-sidedrawer"
-                             @click="${this.showSidedrawer}">☰</a>
-                          <a class="sidedrawer-toggle mui--hidden-xs mui--hidden-sm js-hide-sidedrawer"
-                             @click="${this.hideSidedrawer}">☰</a>
-                          <span class="mui--text-display1 mui--align-middle">ExpressLRS</span>
-                          <elrs-logo class="mui--align-middle" width="50px"></elrs-logo>
-                        </span>
-                    </div>
+                <div class="mui-appbar mui--appbar-line-height mui--align-middle">
+                    <a class="sidedrawer-toggle mui--visible-xs-inline-block mui--visible-sm-inline-block js-show-sidedrawer"
+                       @click="${this.showSidedrawer}">☰</a>
+                    <a class="sidedrawer-toggle mui--hidden-xs mui--hidden-sm js-hide-sidedrawer"
+                       @click="${this.hideSidedrawer}">☰</a>
+                    <span class="mui--text-display1 mui--align-middle">ExpressLRS</span>
+                    <elrs-logo class="mui--align-middle" width="50px"></elrs-logo>
                 </div>
             </header>
             <div id="content-wrapper">
@@ -125,20 +124,14 @@ export class ElrsApp extends LitElement {
     };
 
     setActiveMenu(route) {
-        const links = this.sidedrawerEl.querySelectorAll('a[href^="#"]');
-        links.forEach(a => a.classList.remove('active'));
-        const id = (
-            route === 'binding' ? 'menu-binding' :
-                route === 'options' ? 'menu-options' :
-                    route === 'wifi' ? 'menu-wifi' :
-                        route === 'update' ? 'menu-update' :
-                            route === 'model' ? 'menu-model' :
-                                route === 'buttons' ? 'menu-buttons' :
-                                    route === 'hardware' ? 'menu-hardware' :
-                                        route === 'lr1121' ? 'menu-lr1121' :
-                                            'menu-cw'
-        );
-        const el = id ? this.querySelector(`#${id}`) : null;
+        // Sidedrawer may be moved into MUI overlay, making @query return null; resolve robustly
+        const sidedrawer = this.sidedrawerEl || this.querySelector('#sidedrawer') || document.getElementById('sidedrawer');
+        if (sidedrawer) {
+            const links = sidedrawer.querySelectorAll('a[href^="#"]');
+            links.forEach(a => a.classList.remove('active'));
+        }
+        const id = 'menu-' +route;
+        const el = id ? (this.querySelector(`#${id}`) || document.getElementById(id)) : null;
         if (el) el.classList.add('active');
     };
 
@@ -207,22 +200,27 @@ export class ElrsApp extends LitElement {
         } catch {
         }
         document.body.classList.remove('hide-sidedrawer');
-        this.sidedrawerEl.classList.remove('active');
+        // Sidedrawer may be temporarily moved out of renderRoot; guard lookup
+        const sd = this.querySelector('#sidedrawer') || document.getElementById('sidedrawer');
+        if (sd) sd.classList.remove('active');
         const content = this.buildRouteContent(route);
-        const that = this;
-        this.replaceMainWithTransition(content).then(that.scrollMainToTop);
+        this.replaceMainWithTransition(content).then(() => this.scrollMainToTop());
     };
 
     showSidedrawer() {
+        // Capture a stable reference before moving the node so @query doesn't return null
+        const sidedrawer = this.sidedrawerEl;
+        if (!sidedrawer) return;
         const options = {
             onclose: () => {
-                this.sidedrawerEl.classList.remove('active');
-                document.body.appendChild(this.sidedrawerEl);
+                sidedrawer.classList.remove('active');
+                // Append back into the component so @query can find it again
+                this.appendChild(sidedrawer);
             }
         };
         const overlayEl = mui.overlay('on', options);
-        overlayEl.appendChild(this.sidedrawerEl);
-        setTimeout(() => this.sidedrawerEl.classList.add('active'), 20);
+        overlayEl.appendChild(sidedrawer);
+        setTimeout(() => sidedrawer.classList.add('active'), 20);
     };
 
     hideSidedrawer() {

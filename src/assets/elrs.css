@@ -54,13 +54,6 @@ body, input, select, textarea {
 	margin-bottom: 5px !important;
 }
 
-@media screen and (max-width: 800px) {
-    .logo {
-        width:25%;
-		height:25%;
-    }
-}
-
 /*==========================*/
 
 /* Autocomplete */
