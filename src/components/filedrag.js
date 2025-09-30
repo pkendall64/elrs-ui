@@ -1,14 +1,34 @@
-import {css, html, LitElement, unsafeCSS} from 'lit';
+import {html, LitElement} from 'lit';
 import {customElement, property} from "lit/decorators.js";
-import muiCss from '../assets/mui.css?inline'
-import elrsCss from '../assets/elrs.css?inline'
+import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
 
 @customElement('file-drop')
 export class FileDrop extends LitElement {
     @property()
     accessor label
 
+    // Preserve light DOM rendering to keep bundle small
+    createRenderRoot() {
+        return this;
+    }
+
+    constructor() {
+        super();
+        this._projectedHTML = '';
+    }
+
+    connectedCallback() {
+        // Capture initial light-DOM children before Lit renders and replaces them
+        // This emulates <slot> when using light DOM (createRenderRoot returns `this`)
+        if (this._projectedHTML === '' && this.innerHTML.trim() !== '') {
+            this._projectedHTML = this.innerHTML;
+            this.innerHTML = '';
+        }
+        super.connectedCallback();
+    }
+
     render() {
+        const fallback = 'Drop files here';
         return html`
             <button class="mui-btn mui-btn--small mui-btn--primary upload">
                 <label>
@@ -22,23 +42,23 @@ export class FileDrop extends LitElement {
                     @dragleave=${this._handleDragLeave}
                     @drop=${this._handleDrop}
             >
-                <slot></slot>
+                ${this._projectedHTML ? unsafeHTML(this._projectedHTML) : fallback}
             </div>
         `;
     }
 
     _handleDragOver(event) {
         event.preventDefault(); // This is necessary to allow a drop.
-        this.shadowRoot.querySelector('.drop-zone').classList.add('dragover');
+        event.target.classList.add('dragover');
     }
 
-    _handleDragLeave() {
-        this.shadowRoot.querySelector('.drop-zone').classList.remove('dragover');
+    _handleDragLeave(event) {
+        event.target.classList.remove('dragover');
     }
 
     _handleDrop(event) {
         event.preventDefault(); // Prevent file from being opened by the browser.
-        this.shadowRoot.querySelector('.drop-zone').classList.remove('dragover');
+        event.target.classList.remove('dragover');
         this._callback(event.dataTransfer.files);
     }
 
@@ -57,29 +77,4 @@ export class FileDrop extends LitElement {
         }
 
     }
-
-    static styles = [
-        css`${unsafeCSS(muiCss)}`,
-        css`${unsafeCSS(elrsCss)}`,
-        css`
-        .drop-zone {
-            font-weight: bold;
-            text-align: center;
-            padding: 1em 0;
-            margin: 1em 0;
-            color: #555;
-            border: 2px dashed #555;
-            border-radius: 7px;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-        }
-
-        .drop-zone.dragover {
-            color: #f00;
-            border-color: #f00;
-            border-style: solid;
-            box-shadow: inset 0 3px 4px #888;
-        }
-    `
-    ];
 }

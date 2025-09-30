@@ -139,7 +139,7 @@ export class LR1121Updater extends LitElement {
             ajax.addEventListener('abort', (event) => this._abortHandler(event), false);
             ajax.open('POST', '/lr1121');
             ajax.setRequestHeader('X-FileSize', file.size);
-            const radio = this.renderRoot.querySelector('input[name=optionsRadio]:checked')?.value || '1';
+            const radio = document.querySelector('input[name=optionsRadio]:checked')?.value || '1';
             ajax.setRequestHeader('X-Radio', radio);
             const formdata = new FormData();
             formdata.append('upload', file, file.name);

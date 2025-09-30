@@ -27,7 +27,7 @@ export class ElrsApp extends LitElement {
         this.hideSidedrawer = this.hideSidedrawer.bind(this);
     }
 
-    menu = svg`<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="48" d="M88 152h336M88 256h336M88 360h336"/></svg>`
+    menu = svg`<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="48" d="M88 152h336M88 256h336M88 360h336"/></svg>`
 
     createRenderRoot() {
         return this;
@@ -63,10 +63,10 @@ export class ElrsApp extends LitElement {
                 </ul>
             </div>
             <header id="header">
-                <div class="mui-appbar mui--appbar-line-height mui--align-middle">
-                    <a class="sidedrawer-toggle mui--visible-xs-inline-block mui--visible-sm-inline-block js-show-sidedrawer"
+                <div class="mui-appbar mui--appbar-line-height ">
+                    <a class="mui--align-middle sidedrawer-toggle mui--visible-xs-inline-block mui--visible-sm-inline-block js-show-sidedrawer"
                        @click="${this.showSidedrawer}">${this.menu}</a>
-                    <a class="sidedrawer-toggle mui--hidden-xs mui--hidden-sm js-hide-sidedrawer"
+                    <a class="mui--align-middle sidedrawer-toggle mui--hidden-xs mui--hidden-sm js-hide-sidedrawer"
                        @click="${this.hideSidedrawer}">${this.menu}</a>
                     <span class="mui--text-display1 mui--align-middle">ExpressLRS</span>
                     <elrs-logo class="mui--align-middle" width="50px"></elrs-logo>

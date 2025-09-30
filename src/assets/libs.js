@@ -8,35 +8,22 @@ export function _(el) {
     return document.getElementById(el);
 }
 
-export function _r(el) {
-    return this.renderRoot.getElementById(el);
-}
-
-export function _c(el) {
-    const els = document.querySelectorAll(el)
-    return {
-        on: function(e, f) {
-            els.forEach(el => { el.addEventListener(e, f) })
-        }
-    }
-}
-
 export function postWithFeedback(title, msg, url, getdata, success) {
   return function(e) {
     e.stopPropagation();
     e.preventDefault();
     let xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
+    xmlhttp.onreadystatechange = async function() {
       if (this.readyState === 4) {
         if (this.status === 200) {
           if (success) success();
-          cuteAlert({
+          await cuteAlert({
             type: 'info',
             title: title,
             message: this.responseText
           });
         } else {
-          cuteAlert({
+          await cuteAlert({
             type: 'error',
             title: title,
             message: msg

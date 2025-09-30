@@ -1,11 +1,9 @@
-import {css, html, LitElement, unsafeCSS, nothing} from 'lit';
+import {html, LitElement, nothing} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import '../assets/mui.js'
 import {cuteAlert} from '../assets/libs.js'
 import '../components/filedrag.js'
 import HARDWARE_SCHEMA from '../utils/hardware-schema.js'
-import muiCss from '../assets/mui.css?inline'
-import elrsCss from '../assets/elrs.css?inline'
 
 @customElement('hardware-layout')
 export class HardwareLayout extends LitElement {
@@ -13,6 +11,10 @@ export class HardwareLayout extends LitElement {
     @state() accessor customised = false;
 
     static SCHEMA = HARDWARE_SCHEMA;
+
+    createRenderRoot() {
+        return this;
+    }
 
     render() {
         return html`
@@ -96,7 +98,7 @@ export class HardwareLayout extends LitElement {
 
     _initTooltips() {
         const add = (cls, label) => {
-            const images = this.renderRoot.querySelectorAll('.' + cls);
+            const images = document.querySelectorAll('.' + cls);
             images.forEach(i => i.setAttribute('title', label));
         };
         add('icon-input', 'Digital Input');
@@ -121,7 +123,7 @@ export class HardwareLayout extends LitElement {
 
     _onFileDrop(e) {
         const files = e.detail.files;
-        const form = this.renderRoot.getElementById('upload_hardware');
+        const form = document.getElementById('upload_hardware');
         if (form) form.reset();
         for (const file of files) {
             const reader = new FileReader();
@@ -135,7 +137,7 @@ export class HardwareLayout extends LitElement {
 
     _updateHardwareSettings(data) {
         for (const [key, value] of Object.entries(data)) {
-            const el = this.renderRoot.getElementById(key);
+            const el = document.getElementById(key);
             if (el) {
                 if (el.type === 'checkbox') {
                     el.checked = !!value;
@@ -145,19 +147,19 @@ export class HardwareLayout extends LitElement {
                 }
             }
         }
-        const cc = this.renderRoot.getElementById('custom_config');
+        const cc = document.getElementById('custom_config');
         if (cc) cc.style.display = data.customised ? 'block' : 'none';
     }
 
     _submitConfig() {
-        const form = this.renderRoot.getElementById('upload_hardware');
+        const form = document.getElementById('upload_hardware');
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/hardware.json');
         xhr.setRequestHeader('Content-Type', 'application/json');
         const formData = new FormData(form);
         const body = JSON.stringify(Object.fromEntries(formData), (k, v) => {
             if (v === '') return undefined;
-            const el = this.renderRoot.getElementById(k);
+            const el = document.getElementById(k);
             if (el && el.type === 'checkbox') {
                 return v === 'on';
             }
@@ -190,42 +192,4 @@ export class HardwareLayout extends LitElement {
         };
         return false;
     }
-
-    static styles = [
-        css`${unsafeCSS(muiCss)}`,
-        css`${unsafeCSS(elrsCss)}`,
-        css`
-        img.icon-input {
-            content: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='700pt' height='700pt' version='1.1' viewBox='0 0 700 700' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m326.67 46.668h46.664v260.54l140-140 32.996 32.992-196.33 196.33-196.33-196.33 32.996-32.992 140 140zm210 396.66v-93.332h46.664v140h-466.66v-140h46.664v93.332z' fill='%2312B0FB' fill-rule='evenodd'/%3E%3C/svg%3E%0A");
-            display: block;
-            height: 1.5em;
-            width: 1.5em;
-            float: right;
-        }
-
-        img.icon-output {
-            content: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='700pt' height='700pt' version='1.1' viewBox='0 0 700 700' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m373.33 396.67h-46.664v-283.88l-140 140-32.996-32.992 196.33-196.33 196.33 196.33-32.996 32.992-140-140zm163.34 46.664v-93.332h46.664v140h-466.66v-140h46.664v93.332z' fill='%2371D358' fill-rule='evenodd'/%3E%3C/svg%3E%0A");
-            display: block;
-            height: 1.5em;
-            width: 1.5em;
-            float: right;
-        }
-
-        img.icon-analog {
-            content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23ff9800' stroke-width='4'%3E%3Cpath d='M8 52V12M56 52V12M8 22h12l8 20h8l8-14h12'/%3E%3C/g%3E%3C/svg%3E");
-            display: block;
-            height: 1.5em;
-            width: 1.5em;
-            float: right;
-        }
-
-        img.icon-pwm {
-            content: url("data:image/svg+xml,%3Csvg width='400' height='400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%23C462DD' stroke-width='10' stroke-linecap='undefined' stroke-linejoin='undefined' fill='none'%3E%3Cline y2='318' x2='2' y1='318' x1='106'/%3E%3Cline y2='74' x2='105' y1='323.00001' x1='105'/%3E%3Cline y2='79' x2='254.00001' y1='79' x1='106'/%3E%3Cline y2='323' x2='249' y1='79' x1='249'/%3E%3Cline y2='318' x2='248' y1='318' x1='320'/%3E%3Cline y2='317' x2='315' y1='77' x1='315'/%3E%3Cline y2='77' x2='310' y1='77' x1='377'/%3E%3Cline y2='78' x2='372' y1='322.00001' x1='372'/%3E%3Cline y2='317' x2='371' y1='317' x1='399'/%3E%3C/g%3E%3C/svg%3E");
-            display: block;
-            height: 1.5em;
-            width: 1.5em;
-            float: right;
-        }
-        `
-    ];
 }
