@@ -44,20 +44,20 @@ export class ElrsApp extends LitElement {
                     <li>
                         <strong>General</strong>
                         <ul>
-                            <li><a id="menu-binding" href="#binding">Binding</a></li>
-                            <li><a id="menu-options" href="#options">Options</a></li>
-                            <li><a id="menu-wifi" href="#wifi">WiFi</a></li>
-                            <li><a id="menu-update" href="#update">Update</a></li>
-                            <li><a id="menu-model" href="#model">Model</a></li>
-                            <li><a id="menu-buttons" href="#buttons">Buttons</a></li>
+                            <li><a id="menu-binding" href="#binding"><span class="mui--align-middle icon--symbols icon--symbols--bind"></span>Binding</a></li>
+                            <li><a id="menu-options" href="#options"><span class="mui--align-middle icon--symbols icon--symbols--options"></span>Options</a></li>
+                            <li><a id="menu-wifi" href="#wifi"><span class="mui--align-middle icon--symbols icon--symbols--wifi"></span>WiFi</a></li>
+                            <li><a id="menu-update" href="#update"><span class="mui--align-middle icon--symbols icon--symbols--update"></span>Update</a></li>
+                            <li><a id="menu-model" href="#model"><span class="mui--align-middle icon--symbols icon--symbols--connections"></span>Model</a></li>
+                            <li><a id="menu-buttons" href="#buttons"><span class="mui--align-middle icon--symbols icon--symbols-buttons"></span>Buttons</a></li>
                         </ul>
                     </li>
                     <li>
                         <strong>Advanced</strong>
                         <ul>
-                            <li><a id="menu-hardware" href="#hardware">Hardware Layout</a></li>
-                            <li><a id="menu-cw" href="#cw">Continuous Wave</a></li>
-                            <li><a id="menu-lr1121" href="#lr1121">LR1121 Firmware</a></li>
+                            <li><a id="menu-hardware" href="#hardware"><span class="mui--align-middle icon--symbols icon--symbols--hardware"></span>Hardware Layout</a></li>
+                            <li><a id="menu-cw" href="#cw"><span class="mui--align-middle icon--symbols icon--symbols--wave"></span>Continuous Wave</a></li>
+                            <li><a id="menu-lr1121" href="#lr1121"><span class="mui--align-middle icon--symbols icon--symbols--lr1121"></span>LR1121 Firmware</a></li>
                         </ul>
                     </li>
                 </ul>
