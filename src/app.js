@@ -20,6 +20,8 @@ export class App extends LitElement {
     @query("#sidedrawer") accessor sidedrawerEl;
     @query("#main") accessor mainEl;
 
+    menu = svg`<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="48" d="M88 152h336M88 256h336M88 360h336"/></svg>`
+
     constructor() {
         super();
         // Bind methods used as callbacks to preserve `this`
@@ -27,8 +29,6 @@ export class App extends LitElement {
         this.showSidedrawer = this.showSidedrawer.bind(this);
         this.hideSidedrawer = this.hideSidedrawer.bind(this);
     }
-
-    menu = svg`<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="48" d="M88 152h336M88 256h336M88 360h336"/></svg>`
 
     createRenderRoot() {
         return this;
@@ -67,25 +67,27 @@ export class App extends LitElement {
                     </li>
                 </ul>
             </div>
-            <header id="header">
-                <div class="mui-appbar mui--appbar-line-height elrs-header">
-                    <a class="mui--align-middle sidedrawer-toggle mui--visible-xs-inline-block mui--visible-sm-inline-block js-show-sidedrawer"
-                       @click="${this.showSidedrawer}">${this.menu}</a>
-                    <a class="mui--align-middle sidedrawer-toggle mui--hidden-xs mui--hidden-sm js-hide-sidedrawer"
-                       @click="${this.hideSidedrawer}">${this.menu}</a>
-                    <span class="mui--text-display1 mui--align-middle">ExpressLRS</span>
-                    <elrs-logo class="mui--align-middle" width="50px"></elrs-logo>
-                </div>
+            <header id="header" class="mui-appbar mui--appbar-line-height elrs-header">
+                <a class="mui--align-middle sidedrawer-toggle mui--visible-xs-inline-block mui--visible-sm-inline-block js-show-sidedrawer"
+                   @click="${this.showSidedrawer}">${this.menu}</a>
+                <a class="mui--align-middle sidedrawer-toggle mui--hidden-xs mui--hidden-sm js-hide-sidedrawer"
+                   @click="${this.hideSidedrawer}">${this.menu}</a>
+                <span class="mui--text-display1 mui--align-middle">ExpressLRS</span>
+                <elrs-logo class="mui--align-middle" width="50px"></elrs-logo>
             </header>
             <div id="content-wrapper">
                 <div class="mui--appbar-height"></div>
                 <div id="main" class="mui-container-fluid"></div>
             </div>
-            <footer id="footer">
-                <elrs-footer></elrs-footer>
-            </footer>
+            <elrs-footer></elrs-footer>
         `;
     }
+
+    // Info page
+// <span class="mui--align-middle">
+// <span id="product_name">Loading...</span>
+// <b>Firmware Rev. </b>@@{VERSION} <span id="reg_domain"></span>
+// </span>
 
     firstUpdated(_changedProperties) {
         // Bind menu links to rerender quickly

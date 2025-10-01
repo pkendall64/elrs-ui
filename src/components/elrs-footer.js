@@ -9,7 +9,7 @@ export class ElrsFooter extends LitElement {
 
     render() {
         return html`
-            <div class="elrs-header">
+            <footer id="footer" class="elrs-header">
                 <div class="mui--text-center mui-col-xs-4 mui--align-middle">
                     <a href="https://github.com/ExpressLRS/ExpressLRS">
                         <svg width="24" xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img"
@@ -46,7 +46,7 @@ export class ElrsFooter extends LitElement {
                         Facebook
                     </a>
                 </div>
-            </div>
+            </footer>
         `
     }
 }
