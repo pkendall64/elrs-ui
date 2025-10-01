@@ -2,6 +2,7 @@ import {LitElement, html, svg} from 'lit';
 import {customElement, query} from "lit/decorators.js";
 import './assets/mui.js';
 import './components/elrs-logo.js';
+import {elrsState} from './utils/state.js';
 
 import './pages/continuous-wave.js';
 import './pages/lr1121-updater.js';
@@ -20,7 +21,6 @@ export class App extends LitElement {
 
     constructor() {
         super();
-        this.appState = {options: null, config: null};
         // Bind methods used as callbacks to preserve `this`
         this.renderRoute = this.renderRoute.bind(this);
         this.showSidedrawer = this.showSidedrawer.bind(this);
@@ -107,8 +107,8 @@ export class App extends LitElement {
             const resp = await fetch('/config');
             if (!resp.ok) throw new Error('Failed to load config');
             const data = await resp.json();
-            this.appState.options = data.options || null;
-            this.appState.config = data.config || null;
+            elrsState.options = data.options || null;
+            elrsState.config = data.config || null;
         } catch (e) {
             console.warn('Startup data load failed:', e);
         }
@@ -139,14 +139,8 @@ export class App extends LitElement {
 
     buildRouteContent(route) {
         switch (route) {
-            case 'binding': {
-                const el = document.createElement('binding-panel');
-                if (this.appState.config) {
-                    el.config = this.appState.config;
-                    el.options = this.appState.options;
-                }
-                return el;
-            }
+            case 'binding':
+                return '<binding-panel></binding-panel>';
             case 'options':
                 return '<options-panel></options-panel>';
             case 'wifi':

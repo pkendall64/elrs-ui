@@ -1,15 +1,13 @@
 import {html, LitElement} from "lit";
-import {customElement, property, query, state} from "lit/decorators.js";
+import {customElement, query, state} from "lit/decorators.js";
 import FEATURES from "../features.js";
+import {elrsState} from "../utils/state.js";
 import '../assets/mui.js';
 import {cuteAlert} from "../assets/libs.js";
 import {calcMD5} from "../utils/md5.js";
 
 @customElement('binding-panel')
 class BindingPanel extends LitElement {
-    @property() accessor config
-    @property() accessor options
-
     @query('#vbind') accessor vbind
     @query('#phrase') accessor phrase
 
@@ -25,9 +23,9 @@ class BindingPanel extends LitElement {
     }
 
     firstUpdated(_changedProperties) {
-        this.uid = this.config.uid;
-        this.originalUID = this.config.uid;
-        this.originalUIDType = (this.config && this.config.uidtype) ? this.config.uidtype : '';
+        this.uid = elrsState.config.uid;
+        this.originalUID = elrsState.config.uid;
+        this.originalUIDType = (elrsState.config && elrsState.config.uidtype) ? elrsState.config.uidtype : '';
         this.updateUIDType(this.originalUIDType);
     }
 
@@ -179,19 +177,19 @@ class BindingPanel extends LitElement {
         if (FEATURES.IS_TX) {
             xhr.open('POST', '/options.json');
             xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify({...this.options, customised: true, uid: this.uid}));
+            xhr.send(JSON.stringify({...elrsState.options, customised: true, uid: this.uid}));
         } else {
             xhr.open('POST', '/config');
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify({
                 uid: this.uid,
                 vbind: this.vbind.value,
-                "pwm": this.config["pwm"],
-                "serial-protocol": this.config["serial-protocol"],
-                "serial1-protocol": this.config["serial1-protocol"],
-                "sbus-failsafe": this.config["sbus-failsafe"],
-                "modelid": this.config["modelid"],
-                "force-tlm": this.config["force-tlm"],
+                "pwm": elrsState.config["pwm"],
+                "serial-protocol": elrsState.config["serial-protocol"],
+                "serial1-protocol": elrsState.config["serial1-protocol"],
+                "sbus-failsafe": elrsState.config["sbus-failsafe"],
+                "modelid": elrsState.config["modelid"],
+                "force-tlm": elrsState.config["force-tlm"],
             }));
         }
     }
