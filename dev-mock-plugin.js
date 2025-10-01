@@ -51,10 +51,9 @@ export function devMockPlugin() {
       ],
       vbind: '1',
       'button-actions': [
-        { color: 0, action: [{ action: 0, count: 0, 'is-long-press': false }] },
-        { color: 0, action: [{ action: 0, count: 0, 'is-long-press': false }] },
+        { color: 255, action: [{ action: 1, count: 2, 'is-long-press': false }] },
+        { color: 0, action: [{ action: 2, count: 3, 'is-long-press': true }] },
       ],
-      'button-colors': [0, 0],
       'serial-config': {},
     }
   }

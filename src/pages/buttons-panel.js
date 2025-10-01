@@ -1,9 +1,7 @@
 import {html, LitElement} from "lit";
 import {customElement} from "lit/decorators.js";
-import FEATURES from "../features.js";
 import {elrsState} from "../utils/state.js";
-import '../assets/mui.js';
-import {cuteAlert} from "../assets/libs.js";
+import {_, cuteAlert} from "../assets/libs.js";
 
 @customElement('buttons-panel')
 class ButtonsPanel extends LitElement {
@@ -13,23 +11,9 @@ class ButtonsPanel extends LitElement {
     buttonActions = [];
 
     createRenderRoot() {
+        this.timeoutCurrentColors = this.timeoutCurrentColors.bind(this);
         return this;
     }
-
-//     if (data.hasOwnProperty['button-colors']) {
-//     if (_('button1-color')) _('button1-color').oninput = changeCurrentColors;
-//     if (data['button-colors'][0] === -1) _('button1-color-div').style.display = 'none';
-//     else _('button1-color').value = color(data['button-colors'][0]);
-//
-//     if (_('button2-color')) _('button2-color').oninput = changeCurrentColors;
-//     if (data['button-colors'][1] === -1) _('button2-color-div').style.display = 'none';
-//     else _('button2-color').value = color(data['button-colors'][1]);
-// }
-// if (data.hasOwnProperty('button-actions')) {
-//     updateButtons(data['button-actions']);
-// } else {
-//     _('button-tab').style.display = 'none';
-// }
 
     render() {
         return html`
@@ -46,17 +30,19 @@ class ButtonsPanel extends LitElement {
                             </tbody>
                         </table>
                     ` : ``}
-                    ${FEATURES.IS_TX ? html`
-                        <div id="button1-color-div" style="display: none;">
-                            <input id='button1-color' name='button1-color' type='color'/>
-                            <label for="button1-color">User button 1 color</label>
-                        </div>
-                        <div id="button2-color-div" style="display: none;">
-                            <input id='button2-color' name='button2-color' type='color'/>
-                            <label for="button2-color">User button 2 color</label>
-                        </div>
+                    ${this.buttonActions[0] ? html`
+                    <div id="button1-color-div" style="display: ${this.buttonActions[0]['color']!==undefined ? 'block' : 'none'};">
+                        <input id='button1-color' name='button1-color' type='color' @input="${this.changeCurrentColors}" .value="${this.toRGB(this.buttonActions[0]['color'])}"/>
+                        <label for="button1-color">User button 1 color</label>
+                    </div>
                     ` : ''}
-                    <button class="mui-btn mui-btn--primary" @click="${this.submitButtonActions}">Save</button>
+                    ${this.buttonActions[1] ? html`
+                    <div id="button2-color-div" style="display: ${this.buttonActions[1]['color']!==undefined ? 'block' : 'none'};">
+                        <input id='button2-color' name='button2-color' type='color' @input="${this.changeCurrentColors}" .value="${this.toRGB(this.buttonActions[1]['color'])}"/>
+                        <label for="button2-color">User button 2 color</label>
+                    </div>
+                    ` : ''}
+                    <button id="submit-actions" class="mui-btn mui-btn--primary" @click="${this.submitButtonActions}">Save</button>
                 </form>
             </div>
         `;
@@ -69,20 +55,18 @@ class ButtonsPanel extends LitElement {
         xhr.open('POST', '/config');
         xhr.setRequestHeader('Content-Type', 'application/json');
         // put in the colors
-        if (buttonActions[0]) buttonActions[0].color = to8bit(_(`button1-color`).value)
-        if (buttonActions[1]) buttonActions[1].color = to8bit(_(`button2-color`).value)
-        xhr.send(JSON.stringify({'button-actions': buttonActions}));
+        xhr.send(JSON.stringify({'button-actions': this.buttonActions}));
 
         xhr.onreadystatechange = function () {
             if (this.readyState === 4) {
                 if (this.status === 200) {
-                    cuteAlert({
+                    return cuteAlert({
                         type: 'info',
                         title: 'Success',
                         message: 'Button actions have been saved'
                     });
                 } else {
-                    cuteAlert({
+                    return cuteAlert({
                         type: 'error',
                         title: 'Failed',
                         message: 'An error occurred while saving button configuration'
@@ -111,23 +95,19 @@ class ButtonsPanel extends LitElement {
                 console.log(b, p, v)
                 result.push(this.appendRow(parseInt(b), parseInt(p), v));
             }
-            // if (_v['color'] !== undefined) {
-            //     _(`button${parseInt(b)+1}-color-div`).style.display = 'block';
-            // }
-            // _(`button${parseInt(b)+1}-color`).value = toRGB(_v['color']);
         }
-        // _('button1-color').oninput = changeCurrentColors;
-        // _('button2-color').oninput = changeCurrentColors;
         return result
     }
 
     changeCurrentColors() {
-        if (colorTimer === undefined) {
-            sendCurrentColors();
+        if (this.colorTimer === undefined) {
+            this.sendCurrentColors();
             this.colorTimer = setInterval(this.timeoutCurrentColors, 50);
         } else {
             this.colorUpdated = true;
         }
+        if (this.buttonActions[0]) this.buttonActions[0].color = this.to8bit(_(`button1-color`).value)
+        if (this.buttonActions[1]) this.buttonActions[1].color = this.to8bit(_(`button2-color`).value)
     }
 
     to8bit(v) {
@@ -141,9 +121,9 @@ class ButtonsPanel extends LitElement {
         let colors = [];
         for (const [k, v] of Object.entries(data)) {
             if (_(k) && _(k).type === 'color') {
-                const index = parseInt(k.substring('6')) - 1;
+                const index = parseInt(k.substring(6)) - 1;
                 if (_(k + '-div').style.display === 'none') colors[index] = -1;
-                else colors[index] = to8bit(v);
+                else colors[index] = this.to8bit(v);
             }
         }
         const xmlhttp = new XMLHttpRequest();
@@ -176,19 +156,21 @@ class ButtonsPanel extends LitElement {
 
     changeAction(b, p, value) {
         (this.buttonActions)[b]['action'][p]['action'] = value;
-
         if (value === 0) {
             _(`select-press-${b}-${p}`).value = '';
             _(`select-long-${b}-${p}`).value = '';
             _(`select-short-${b}-${p}`).value = '';
         }
+        _(`select-press-${b}-${p}`).disabled = value === 0;
+        _(`select-long-${b}-${p}`).disabled = value === 0;
+        _(`select-short-${b}-${p}`).disabled = value === 0;
         this.checkEnableButtonActionSave();
     }
 
     changePress(b, p, value) {
         (this.buttonActions)[b]['action'][p]['is-long-press'] = (value === 'true');
-        _(`mui-long-${b}-${p}`).style.display = value === 'true' ? 'block' : 'none';
-        _(`mui-short-${b}-${p}`).style.display = value === 'true' ? 'none' : 'block';
+        _(`select-long-${b}-${p}`).style.display = value === 'true' ? 'block' : 'none';
+        _(`select-short-${b}-${p}`).style.display = value === 'true' ? 'none' : 'block';
         this.checkEnableButtonActionSave();
     }
 
@@ -215,7 +197,7 @@ class ButtonsPanel extends LitElement {
                 </td>
                 <td>
                     <div class="mui-select">
-                        <select @change="${(e) => {this.changeAction(b, p, parseInt(e.target.value))}}">
+                        <select @change="${(e) => this.changeAction(b, p, parseInt(e.target.value))}">
                             ${this._renderOptions(['Unused', 'Increase Power', 'Go to VTX Band Menu', 'Go to VTX Channel Menu',
                                 'Send VTX Settings', 'Start WiFi', 'Enter Binding Mode', 'Start BLE Joystick'], v['action'])}
                         </select>
@@ -224,12 +206,10 @@ class ButtonsPanel extends LitElement {
                 </td>
                 <td>
                     <div class="mui-select">
-                        <select id="select-press-${b}-${p}" @change="${(e) => this.changePress(b, p, e.target.value)}">
+                        <select id="select-press-${b}-${p}"  @change="${(e) => this.changePress(b, p, e.target.value)}">
                             <option value='' disabled hidden ?selected="${v['action'] === 0}"></option>
-                            <option value='false' ?selected="${v['is-long-press'] === false}">Short press (click)
-                            </option>
-                            <option value='true' ?selected="${v['is-long-press'] === true}">Long press (hold)
-                            </option>
+                            <option value='false' ?selected="${v['is-long-press'] === false}">Short press (click)</option>
+                            <option value='true' ?selected="${v['is-long-press'] === true}">Long press (hold)</option>
                         </select>
                         <label>Press</label>
                     </div>
@@ -249,7 +229,7 @@ class ButtonsPanel extends LitElement {
                     <div class="mui-select" id="mui-short-${b}-${p}"
                          style="display:${(this.buttonActions)[b]['action'][p]['is-long-press'] ? "none" : "block"};">
                         <select id="select-short-${b}-${p}" @change="${(e) => this.changeCount(b, p, parseInt(e.target.value))}">
-                            <option value='' disabled hidden ?selected="${v['action'] === 0}"}></option>
+                            <option value='' disabled hidden ?selected="${v['action'] === 0}"></option>
                             ${this._renderOptions([
                                 '1 time', '2 times', '3 times', '4 times',
                                 '5 times', '6 times', '7 times', '8 times',
@@ -261,5 +241,4 @@ class ButtonsPanel extends LitElement {
             </tr>
         `
     }
-
 }
