@@ -113,6 +113,7 @@ button {
     font-size: 20px;
     line-height: 20px;
     margin-right: 10px;
+    margin-left: 20px;
 }
 
 .sidedrawer-toggle:hover {

@@ -1,20 +1,20 @@
 import {LitElement, html, svg} from 'lit';
 import {customElement, query} from "lit/decorators.js";
-import '../assets/mui.js';
+import './assets/mui.js';
+import './components/elrs-logo.js';
 
-import './elrs-logo.js';
-import '../pages/continuous-wave.js';
-import '../pages/lr1121-updater.js';
-import '../pages/hardware-layout.js';
-import '../pages/binding-panel.js';
-import '../pages/options-panel.js';
-import '../pages/wifi-panel.js';
-import '../pages/update-panel.js';
-import '../pages/model-panel.js';
-import '../pages/buttons-panel.js';
+import './pages/continuous-wave.js';
+import './pages/lr1121-updater.js';
+import './pages/hardware-layout.js';
+import './pages/binding-panel.js';
+import './pages/options-panel.js';
+import './pages/wifi-panel.js';
+import './pages/update-panel.js';
+import './pages/model-panel.js';
+import './pages/buttons-panel.js';
 
 @customElement('elrs-app')
-export class ElrsApp extends LitElement {
+export class App extends LitElement {
     @query("#sidedrawer") accessor sidedrawerEl;
     @query("#main") accessor mainEl;
 
