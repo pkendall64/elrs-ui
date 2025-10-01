@@ -1,8 +1,9 @@
 import {LitElement, html, svg} from 'lit';
 import {customElement, query} from "lit/decorators.js";
-import './assets/mui.js';
-import './components/elrs-logo.js';
+import FEATURES from "./features.js";
 import {elrsState} from './utils/state.js';
+import './components/elrs-logo.js';
+import './components/elrs-footer.js';
 
 import './pages/continuous-wave.js';
 import './pages/lr1121-updater.js';
@@ -49,7 +50,9 @@ export class App extends LitElement {
                             <li><a id="menu-wifi" href="#wifi"><span class="mui--align-middle icon--symbols icon--symbols--wifi"></span>WiFi</a></li>
                             <li><a id="menu-update" href="#update"><span class="mui--align-middle icon--symbols icon--symbols--update"></span>Update</a></li>
                             <li><a id="menu-model" href="#model"><span class="mui--align-middle icon--symbols icon--symbols--connections"></span>Model</a></li>
-                            <li><a id="menu-buttons" href="#buttons"><span class="mui--align-middle icon--symbols icon--symbols-buttons"></span>Buttons</a></li>
+                            ${FEATURES.IS_TX ? html`
+                                <li><a id="menu-buttons" href="#buttons"><span class="mui--align-middle icon--symbols icon--symbols-buttons"></span>Buttons</a></li>
+                            ` : ''}
                         </ul>
                     </li>
                     <li>
@@ -57,13 +60,15 @@ export class App extends LitElement {
                         <ul>
                             <li><a id="menu-hardware" href="#hardware"><span class="mui--align-middle icon--symbols icon--symbols--hardware"></span>Hardware Layout</a></li>
                             <li><a id="menu-cw" href="#cw"><span class="mui--align-middle icon--symbols icon--symbols--wave"></span>Continuous Wave</a></li>
-                            <li><a id="menu-lr1121" href="#lr1121"><span class="mui--align-middle icon--symbols icon--symbols--lr1121"></span>LR1121 Firmware</a></li>
+                            ${FEATURES.HAS_LR1121 ? html`
+                                <li><a id="menu-lr1121" href="#lr1121"><span class="mui--align-middle icon--symbols icon--symbols--lr1121"></span>LR1121 Firmware</a></li>
+                            `: ''}
                         </ul>
                     </li>
                 </ul>
             </div>
             <header id="header">
-                <div class="mui-appbar mui--appbar-line-height ">
+                <div class="mui-appbar mui--appbar-line-height elrs-header">
                     <a class="mui--align-middle sidedrawer-toggle mui--visible-xs-inline-block mui--visible-sm-inline-block js-show-sidedrawer"
                        @click="${this.showSidedrawer}">${this.menu}</a>
                     <a class="mui--align-middle sidedrawer-toggle mui--hidden-xs mui--hidden-sm js-hide-sidedrawer"
@@ -77,10 +82,7 @@ export class App extends LitElement {
                 <div id="main" class="mui-container-fluid"></div>
             </div>
             <footer id="footer">
-                <div class="mui-container-fluid">
-                    <br/>
-                    Made with ♥ by <a href="https://www.muicss.com">MUI</a>
-                </div>
+                <elrs-footer></elrs-footer>
             </footer>
         `;
     }
@@ -150,14 +152,15 @@ export class App extends LitElement {
             case 'model':
                 return '<model-panel></model-panel>';
             case 'buttons':
-                return '<buttons-panel></buttons-panel>';
+                return FEATURES.IS_TX ? '<buttons-panel></buttons-panel>' : '';
             case 'hardware':
                 return '<hardware-layout></hardware-layout>';
-            case 'lr1121':
-                return '<lr1121-updater></lr1121-updater>';
             case 'cw':
-            default:
                 return '<continuous-wave></continuous-wave>';
+            case 'lr1121':
+                return FEATURES.HAS_LR1121 ? '<lr1121-updater></lr1121-updater>' : '';
+            default:
+                return '';
         }
     };
 

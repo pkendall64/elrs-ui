@@ -92,7 +92,6 @@ class ButtonsPanel extends LitElement {
         this.buttonActions = elrsState.config['button-actions'];
         for (const [b, _v] of Object.entries(this.buttonActions)) {
             for (const [p, v] of Object.entries(_v['action'])) {
-                console.log(b, p, v)
                 result.push(this.appendRow(parseInt(b), parseInt(p), v));
             }
         }

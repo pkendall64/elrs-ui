@@ -31,6 +31,7 @@ button {
 
 :root {
     --drawer-width: 250px;
+    --footer-height: 76px;
 }
 
 #sidedrawer {
@@ -53,15 +54,25 @@ button {
     transition: margin-left 0.2s;
 
     /* sticky bottom */
-    margin-bottom: -160px;
-    padding-bottom: 160px;
+    box-sizing: border-box;
+    margin-bottom: calc(-1 * var(--footer-height));
+    padding-bottom: var(--footer-height);
 }
 
 #footer {
-    height: 160px;
+    box-sizing: border-box;
+    height: var(--footer-height);
     margin-left: 0px;
     transition: margin-left 0.2s;
+    background-color: #0288D1;
+    color: #fff;
 }
+
+#footer a {
+    color: #fff;
+    text-decoration: underline;
+}
+
 
 @media (min-width: 768px) {
     #header {
@@ -97,16 +108,10 @@ button {
     }
 }
 
-/**
- * Toggle Side drawer
- */
 #sidedrawer.active {
     transform: translate(var(--drawer-width));
 }
 
-/**
- * Header CSS
- */
 .sidedrawer-toggle {
     color: #fff;
     cursor: pointer;
@@ -121,22 +126,6 @@ button {
     text-decoration: none;
 }
 
-/**
- * Footer CSS
- */
-#footer {
-    background-color: #0288D1;
-    color: #fff;
-}
-
-#footer a {
-    color: #fff;
-    text-decoration: underline;
-}
-
-/**
- * Side drawer CSS
- */
 #sidedrawer-brand {
     padding-left: 20px;
 }
@@ -167,10 +156,9 @@ button {
     padding: 0;
 }
 
-/* Make menu links look like menu items, not links */
 #sidedrawer a {
     display: block;
-    padding: 8px 12px; /* moved entries 10px closer to the left */
+    padding: 8px 12px;
     color: inherit;
     text-decoration: none;
 }
@@ -179,43 +167,37 @@ button {
     text-decoration: none;
 }
 
-/* Selected/active menu entry */
 #sidedrawer a.active {
-    background-color: #FAFAFA; /* lighter than main background (#eee) */
+    background-color: #FAFAFA;
     position: relative;
     font-weight: 600;
 }
-/* Triangle chevron on the right, same color as main window background (#eee) */
+
 #sidedrawer a.active::after {
     content: '';
     position: absolute;
     top: 50%;
-    right: 0; /* stay within the menu */
+    right: 0;
     transform: translateY(-50%);
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: 12px 12px 12px 0; /* top right bottom left */
-    border-color: transparent #2196F3 transparent transparent; /* left-pointing triangle */
-    z-index: 1; /* overlay on top of the menu item */
+    border-width: 12px 12px 12px 0;
+    border-color: transparent #2196F3 transparent transparent;
+    z-index: 1;
 }
 
-/**
- * Route transition CSS
- */
 #main {
     opacity: 1;
     transform: translateY(0);
     transition: opacity 180ms ease, transform 180ms ease;
 }
 
-/* fade out the old view */
 #main.route-fade-out {
     opacity: 0;
     transform: translateY(6px);
 }
 
-/* optional: prepare fade-in start state (kept for robustness) */
 #main.route-fade-in {
     opacity: 0;
     transform: translateY(6px);
