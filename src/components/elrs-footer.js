@@ -9,8 +9,8 @@ export class ElrsFooter extends LitElement {
 
     render() {
         return html`
-            <footer id="footer" class="elrs-header">
-                <div class="mui--text-center mui-col-xs-4 mui--align-middle">
+            <footer id="footer" class="elrs-header" style="align-content: center">
+                <div class="mui--text-center mui-col-xs-4">
                     <a href="https://github.com/ExpressLRS/ExpressLRS">
                         <svg width="24" xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img"
                              viewBox="0 0 512 512">
@@ -22,7 +22,7 @@ export class ElrsFooter extends LitElement {
                         GitHub
                     </a>
                 </div>
-                <div class="mui--text-center mui-col-xs-4 mui--align-middle">
+                <div class="mui--text-center mui-col-xs-4">
                     <a href="https://discord.gg/dS6ReFY">
                         <svg width="24" fill="#5865f2" aria-label="Discord" role="img" version="1.1"
                              viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
@@ -34,7 +34,7 @@ export class ElrsFooter extends LitElement {
                         Discord
                     </a>
                 </div>
-                <div class="mui--text-center mui-col-xs-4 mui--align-middle">
+                <div class="mui--text-center mui-col-xs-4">
                     <a href="https://www.facebook.com/groups/636441730280366">
                         <svg width="24" xmlns="http://www.w3.org/2000/svg" aria-label="Facebook" role="img"
                              viewBox="0 0 512 512">

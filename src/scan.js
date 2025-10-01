@@ -2,14 +2,6 @@
 /* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
 
-import FEATURES from './features.js'
-import './components/elrs-header.js'
-import './components/elrs-footer.js'
-import './components/filedrag.js'
-import './assets/mui.js'
-import { postWithFeedback, cuteAlert, autocomplete, _ } from './assets/libs.js'
-import { calcMD5 } from './utils/md5.js'
-
 document.addEventListener('DOMContentLoaded', init, false);
 
 let storedModelId = 255;
