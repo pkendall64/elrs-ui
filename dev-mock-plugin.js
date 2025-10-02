@@ -12,6 +12,10 @@ export function devMockPlugin() {
     res.setHeader('Content-Type', 'text/plain')
     res.end(text)
   }
+  function sendStatus(res, status = 204) {
+    res.statusCode = status
+    res.end()
+  }
   // Basic stub data used by multiple endpoints
   const stubState = {
     options: {
@@ -57,6 +61,7 @@ export function devMockPlugin() {
       'serial-config': {},
     }
   }
+  let networkQueryCount = 0
   return {
     name: 'vite-dev-mock',
     apply: 'serve',
@@ -73,9 +78,15 @@ export function devMockPlugin() {
         })
 
         if (method === 'GET' && url === '/config') {
+          // Reset the networks scan delay counter whenever config is fetched
+          networkQueryCount = 0
           return sendJSON(res, { options: stubState.options, config: stubState.config })
         }
         if (method === 'GET' && (url === '/networks.json' || url.startsWith('/networks.json'))) {
+          networkQueryCount++
+          if (networkQueryCount <= 3) {
+            return sendStatus(res, 204)
+          }
           return sendJSON(res, ['ExpressLRS TX', 'MockHomeWiFi', 'OfficeNet'])
         }
         if (method === 'POST' && (url === '/options' || url === '/options.json')) {
@@ -107,6 +118,20 @@ export function devMockPlugin() {
         if (method === 'POST' && url === '/update') {
           // Treat as file upload; we won’t parse multipart in this mock
           return sendText(res, 'Firmware uploaded')
+        }
+        // WiFi page mock endpoints
+        if (method === 'POST' && (url === '/sethome' || url.startsWith('/sethome?'))) {
+          // Accept FormData multipart; no need to parse for mock
+          return readBody().then(() => sendText(res, 'WiFi settings applied'))
+        }
+        if (method === 'POST' && url === '/access') {
+          return sendText(res, 'Access Point started')
+        }
+        if (method === 'POST' && url === '/forget') {
+          return sendText(res, 'Home network forgotten')
+        }
+        if (method === 'POST' && url === '/connect') {
+          return sendText(res, 'Connecting to Home network...')
         }
         // CW page mock endpoints
         if (url === '/cw' && method === 'GET') {
