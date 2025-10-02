@@ -1,7 +1,7 @@
 import {html, LitElement} from "lit";
 import {customElement} from "lit/decorators.js";
-import {elrsState} from "../utils/state.js";
-import {_, cuteAlert} from "../assets/libs.js";
+import {elrsState, saveConfig} from "../utils/state.js";
+import {_} from "../assets/libs.js";
 
 @customElement('buttons-panel')
 class ButtonsPanel extends LitElement {
@@ -51,29 +51,9 @@ class ButtonsPanel extends LitElement {
     submitButtonActions(e) {
         e.stopPropagation();
         e.preventDefault();
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/config');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        // put in the colors
-        xhr.send(JSON.stringify({'button-actions': this.buttonActions}));
-
-        xhr.onreadystatechange = function () {
-            if (this.readyState === 4) {
-                if (this.status === 200) {
-                    return cuteAlert({
-                        type: 'info',
-                        title: 'Success',
-                        message: 'Button actions have been saved'
-                    });
-                } else {
-                    return cuteAlert({
-                        type: 'error',
-                        title: 'Failed',
-                        message: 'An error occurred while saving button configuration'
-                    });
-                }
-            }
-        }
+        saveConfig(
+            {'button-actions': this.buttonActions}
+        )
     }
 
     toRGB(c) {

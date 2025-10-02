@@ -1,9 +1,8 @@
 import {html, LitElement} from "lit";
 import {customElement, query, state} from "lit/decorators.js";
 import FEATURES from "../features.js";
-import {elrsState} from "../utils/state.js";
+import {elrsState, saveConfig, saveOptions} from "../utils/state.js";
 import '../assets/mui.js';
-import {cuteAlert} from "../assets/libs.js";
 import {calcMD5} from "../utils/md5.js";
 
 @customElement('binding-panel')
@@ -171,61 +170,24 @@ class BindingPanel extends LitElement {
     submitOptions(e) {
         e.stopPropagation();
         e.preventDefault();
-        const xhr = new XMLHttpRequest();
 
-        xhr.onreadystatechange = () => this.handleUpdate(xhr);
         if (FEATURES.IS_TX) {
-            xhr.open('POST', '/options.json');
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify({...elrsState.options, customised: true, uid: this.uid}));
+            saveOptions({
+                ...elrsState.options,
+                customised: true,
+                uid: this.uid
+            }, () => {
+                this.originalUID = this.uid;
+                this.originalUIDType = 'Overridden';
+                this.phrase.value = '';
+                this.updateUIDType(this.originalUIDType);
+            })
         } else {
-            xhr.open('POST', '/config');
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify({
+            saveConfig({
+                ...elrsState.config,
                 uid: this.uid,
-                vbind: this.vbind.value,
-                "pwm": elrsState.config["pwm"],
-                "serial-protocol": elrsState.config["serial-protocol"],
-                "serial1-protocol": elrsState.config["serial1-protocol"],
-                "sbus-failsafe": elrsState.config["sbus-failsafe"],
-                "modelid": elrsState.config["modelid"],
-                "force-tlm": elrsState.config["force-tlm"],
-            }));
-        }
-    }
-
-    async handleUpdate(xhr) {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                await cuteAlert({
-                    type: 'question',
-                    title: 'Upload Succeeded',
-                    message: 'Reboot to take effect',
-                    confirmText: 'Reboot',
-                    cancelText: 'Close'
-                }).then((e) => {
-                    if (FEATURES.IS_TX) {
-                        this.originalUID = this.uid;
-                        this.originalUIDType = 'Overridden';
-                        this.phrase.value = '';
-                        this.updateUIDType(this.originalUIDType);
-                    }
-                    if (e === 'confirm') {
-                        const r = new XMLHttpRequest();
-                        r.open('POST', '/reboot');
-                        r.setRequestHeader('Content-Type', 'application/json');
-                        r.onreadystatechange = function () {
-                        };
-                        r.send();
-                    }
-                });
-            } else {
-                await cuteAlert({
-                    type: 'error',
-                    title: 'Upload Failed',
-                    message: xhr.responseText
-                });
-            }
+                vbind: this.vbind.value
+            })
         }
     }
 }

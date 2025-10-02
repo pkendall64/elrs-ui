@@ -20,18 +20,18 @@ export class HardwareLayout extends LitElement {
         return html`
             <div class="hardware-layout">
                 <div class="mui-panel mui--text-title">Hardware Layout</div>
-                <div id="custom_config" class="mui-panel"
-                     style="display:${this.customised ? 'block' : 'none'}; background-color: #FFC107;">
-                    This hardware configuration has been customized. This can be safely ignored if this is a custom hardware
-                    build or for testing purposes.<br>
-                    You can <a download href="/hardware.json">download</a> the configuration or <a href="/reset?hardware">reset</a>
-                    to pre-configured defaults and reboot.
-                </div>
                 <div class="mui-panel">
                     <label>Upload target configuration (remember to press "Save Target Configuration" below):</label>
                     <file-drop id="filedrag" label="Upload" @file-drop=${this._onFileDrop}>or drop files here</file-drop>
                 </div>
                 <div class="mui-panel">
+                    <div class="mui-panel"
+                         style="display:${this.customised ? 'block' : 'none'}; background-color: #FFC107;">
+                        This hardware configuration has been customized. This can be safely ignored if this is a custom hardware
+                        build or for testing purposes.<br>
+                        You can <a download href="/hardware.json">download</a> the configuration or <a href="/reset?hardware">reset</a>
+                        to pre-configured defaults and reboot.
+                    </div>
                     <form id="upload_hardware" method="POST" action="/hardware">
                         <input type="hidden" id="customised" name="customised" value="true"/>
                         ${this._renderTable()}
@@ -147,8 +147,6 @@ export class HardwareLayout extends LitElement {
                 }
             }
         }
-        const cc = document.getElementById('custom_config');
-        if (cc) cc.style.display = data.customised ? 'block' : 'none';
     }
 
     _submitConfig() {

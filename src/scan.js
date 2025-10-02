@@ -342,12 +342,6 @@ function updateConfig(data, options) {
   originalUIDType = data.uidtype;
   updateUIDType(data.uidtype);
 
-  if (data.mode==='STA') {
-    _('stamode').style.display = 'block';
-    _('ssid').textContent = data.ssid;
-  } else {
-    _('apmode').style.display = 'block';
-  }
   if (!FEATURES.IS_TX) {
       if (data.hasOwnProperty('modelid') && data.modelid !== 255) {
           _('modelNum').style.display = 'block';
@@ -437,26 +431,6 @@ function initOptions() {
     }
   };
   xmlhttp.open('GET', '/config', true);
-  xmlhttp.send();
-}
-
-function getNetworks() {
-  const xmlhttp = new XMLHttpRequest();
-  xmlhttp.onload = function() {
-    if (this.status === 204) {
-      setTimeout(getNetworks, 2000);
-    } else {
-      const data = JSON.parse(this.responseText);
-      if (data.length > 0) {
-        _('loader').style.display = 'none';
-        autocomplete(_('network'), data);
-      }
-    }
-  };
-  xmlhttp.onerror = function() {
-    setTimeout(getNetworks, 2000);
-  };
-  xmlhttp.open('GET', 'networks.json', true);
   xmlhttp.send();
 }
 
@@ -634,34 +608,10 @@ _('fileselect').addEventListener('change', (e) => {
 
 // =========================================================
 
-function setupNetwork(event) {
-  if (_('nt0').checked) {
-    postWithFeedback('Set Home Network', 'An error occurred setting the home network', '/sethome?save', function() {
-      return new FormData(_('sethome'));
-    }, function() {
-      _('wifi-ssid').value = _('network').value;
-      _('wifi-password').value = _('password').value;
-    })(event);
-  }
-  if (_('nt1').checked) {
-    postWithFeedback('Connect To Network', 'An error occurred connecting to the network', '/sethome', function() {
-      return new FormData(_('sethome'));
-    })(event);
-  }
-  if (_('nt2').checked) {
-    postWithFeedback('Start Access Point', 'An error occurred starting the Access Point', '/access', null)(event);
-  }
-  if (_('nt3').checked) {
-    postWithFeedback('Forget Home Network', 'An error occurred forgetting the home network', '/forget', null)(event);
-  }
-}
-
 if (!FEATURES.IS_TX)
     _('reset-model').addEventListener('click', postWithFeedback('Reset Model Settings', 'An error occurred resetting model settings', '/reset?model', null));
 _('reset-options').addEventListener('click', postWithFeedback('Reset Runtime Options', 'An error occurred resetting runtime options', '/reset?options', null));
 
-_('sethome').addEventListener('submit', setupNetwork);
-_('connect').addEventListener('click', postWithFeedback('Connect to Home Network', 'An error occurred connecting to the Home network', '/connect', null));
 if (_('config')) {
   _('config').addEventListener('submit', postWithFeedback('Set Configuration', 'An error occurred updating the configuration', '/config',
       (xmlhttp) => {
@@ -758,7 +708,6 @@ _('submit-options').addEventListener('click', submitOptions);
 
 function updateOptions(data) {
   for (const [key, value] of Object.entries(data)) {
-    if (key ==='wifi-on-interval' && value === -1) continue;
     if (_(key)) {
       if (_(key).type === 'checkbox') {
         _(key).checked = value;
@@ -769,8 +718,6 @@ function updateOptions(data) {
       if (_(key).onchange) _(key).onchange();
     }
   }
-  if (data['wifi-ssid']) _('homenet').textContent = data['wifi-ssid'];
-  else _('connect').style.display = 'none';
   if (data['customised']) _('reset-options').style.display = 'block';
   _('submit-options').disabled = false;
 }

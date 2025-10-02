@@ -134,7 +134,7 @@ export function devMockPlugin() {
         // Hardware page mock endpoints
         if (url === '/hardware.json' && method === 'GET') {
           return sendJSON(res, {
-            customised: false,
+            customised: true,
             chipselect: '',
             oled_scl: '',
             oled_sda: '',

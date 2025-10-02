@@ -49,7 +49,7 @@ export class App extends LitElement {
                             <li><a id="menu-wifi" href="#wifi"><span class="mui--align-middle icon--symbols icon--symbols--wifi"></span>WiFi</a></li>
                             <li><a id="menu-update" href="#update"><span class="mui--align-middle icon--symbols icon--symbols--update"></span>Update</a></li>
                             <li><a id="menu-model" href="#model"><span class="mui--align-middle icon--symbols icon--symbols--connections"></span>Model</a></li>
-                            ${FEATURES.IS_TX ? html`
+                            ${elrsState.config['button-actions'] && elrsState.config['button-actions'].length !== 0 ? html`
                                 <li><a id="menu-buttons" href="#buttons"><span class="mui--align-middle icon--symbols icon--symbols-buttons"></span>Buttons</a></li>
                             ` : ''}
                         </ul>
@@ -115,6 +115,7 @@ export class App extends LitElement {
             const data = await resp.json();
             elrsState.options = data.options || null;
             elrsState.config = data.config || null;
+            this.requestUpdate()
         } catch (e) {
             console.warn('Startup data load failed:', e);
         }
