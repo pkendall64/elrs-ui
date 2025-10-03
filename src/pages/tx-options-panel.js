@@ -2,7 +2,8 @@ import {html, LitElement} from "lit";
 import {customElement, state} from "lit/decorators.js";
 import FEATURES from "../features.js";
 import {elrsState, saveOptions} from "../utils/state.js";
-import {_renderOptions, postWithFeedback} from "../utils/libs.js";
+import {_renderOptions} from "../utils/libs.js";
+import {postWithFeedback} from "../utils/feedback.js";
 
 @customElement('tx-options-panel')
 class TxOptionsPanel extends LitElement {

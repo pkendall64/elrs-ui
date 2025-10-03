@@ -1,7 +1,7 @@
 import {html, LitElement, nothing} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import '../assets/mui.js'
-import {cuteAlert, postWithFeedback} from '../utils/libs.js'
+import {cuteAlert, postWithFeedback, saveJSONWithReboot} from '../utils/feedback.js'
 import '../components/filedrag.js'
 import HARDWARE_SCHEMA from '../utils/hardware-schema.js'
 
@@ -152,30 +152,9 @@ export class HardwareLayout extends LitElement {
 
     _submitConfig() {
         const form = document.getElementById('upload_hardware');
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/hardware.json');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                cuteAlert({
-                    type: 'question',
-                    title: 'Upload Succeeded',
-                    message: 'Reboot to take effect',
-                    confirmText: 'Reboot',
-                    cancelText: 'Close'
-                }).then((e) => {
-                    if (e === 'confirm') {
-                        const rx = new XMLHttpRequest();
-                        rx.open('POST', '/reboot');
-                        rx.setRequestHeader('Content-Type', 'application/json');
-                        rx.onreadystatechange = function () {
-                        };
-                        rx.send();
-                    }
-                });
-            }
-        };
         const formData = new FormData(form);
+        const changes = JSON.parse(JSON.stringify(Object.fromEntries(formData), (k, v) => v)) // placeholder
+        // rebuild using original serializer logic
         const body = JSON.stringify(Object.fromEntries(formData), (k, v) => {
             if (v === '') return undefined;
             const el = document.getElementById(k);
@@ -188,7 +167,8 @@ export class HardwareLayout extends LitElement {
             }
             return isNaN(v) ? v : +v;
         });
-        xhr.send(body);
+        // Use shared helper that prompts for reboot on success
+        saveJSONWithReboot('Upload Succeeded', 'Upload Failed', '/hardware.json', JSON.parse(body));
         return false;
     }
 }

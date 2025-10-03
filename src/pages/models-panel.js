@@ -1,7 +1,7 @@
 import {html, LitElement} from "lit";
 import {customElement} from "lit/decorators.js";
 import '../assets/mui.js';
-import {postWithFeedback} from "../utils/libs.js";
+import {postWithFeedback} from "../utils/feedback.js";
 
 @customElement('models-panel')
 class ModelsPanel extends LitElement {

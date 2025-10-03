@@ -2,6 +2,7 @@ import {html, LitElement} from "lit";
 import {customElement} from "lit/decorators.js";
 import {elrsState, saveConfig} from "../utils/state.js";
 import {_, _renderOptions} from "../utils/libs.js";
+import {postJSON} from "../utils/feedback.js";
 
 @customElement('buttons-panel')
 class ButtonsPanel extends LitElement {
@@ -105,10 +106,8 @@ class ButtonsPanel extends LitElement {
                 else colors[index] = this.to8bit(v);
             }
         }
-        const xmlhttp = new XMLHttpRequest();
-        xmlhttp.open('POST', '/buttons', true);
-        xmlhttp.setRequestHeader('Content-type', 'application/json');
-        xmlhttp.send(JSON.stringify(colors));
+        // Send current colors without UI noise using shared helper
+        postJSON('/buttons', colors)
         this.colorUpdated = false;
     }
 

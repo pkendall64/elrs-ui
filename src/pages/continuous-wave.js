@@ -1,6 +1,7 @@
 import {html, LitElement} from 'lit';
 import {customElement, query, state} from 'lit/decorators.js';
 import FEATURES from "../features.js";
+import {post} from "../utils/feedback.js";
 
 @customElement('continuous-wave')
 export class ContinuousWave extends LitElement {
@@ -140,16 +141,12 @@ export class ContinuousWave extends LitElement {
         e.stopPropagation();
         e.preventDefault();
         this.started = true;
-        const xmlhttp = new XMLHttpRequest();
-        xmlhttp.open('POST', '/cw', true);
-        xmlhttp.onreadystatechange = function () {
-        };
-        const formdata = new FormData;
+        const formdata = new FormData();
         formdata.append('radio', this.optionsRadios2?.checked ? 2 : 1);
         if (FEATURES.HAS_LR1121) {
             formdata.append('subGHz', this.optionsSetSubGHz.checked ? 1 : 0);
         }
-        xmlhttp.send(formdata);
+        post('/cw', formdata)
     }
 
     _measured(e) {

@@ -2,7 +2,7 @@ import {html, LitElement} from 'lit';
 import {customElement, query, state} from 'lit/decorators.js';
 import '../assets/mui.js'
 import '../components/filedrag.js'
-import {cuteAlert} from "../utils/libs.js";
+import {cuteAlert, postWithFeedback} from "../utils/feedback.js";
 
 @customElement('lr1121-updater')
 export class LR1121Updater extends LitElement {
@@ -101,12 +101,10 @@ export class LR1121Updater extends LitElement {
         return "0x" + (i + 0x10000).toString(16).substr(-len).toUpperCase();
     }
 
-    _reset() {
-        const xmlhttp = new XMLHttpRequest();
-        xmlhttp.open('POST', '/reset?lr1121', true);
-        xmlhttp.onreadystatechange = () => {
-        };
-        xmlhttp.send();
+    _reset(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return postWithFeedback('LR1121 Reset', 'Reset failed', '/reset?lr1121', null)(e);
     }
 
     _loadData() {

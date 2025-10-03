@@ -1,7 +1,8 @@
 import {html, LitElement} from "lit";
 import {customElement, state} from "lit/decorators.js";
 import {elrsState} from "../utils/state.js";
-import {_, postWithFeedback} from "../utils/libs.js";
+import {_} from "../utils/libs.js";
+import {postWithFeedback} from "../utils/feedback.js";
 import {autocomplete} from "../utils/autocomplete.js";
 
 @customElement('wifi-panel')
@@ -82,7 +83,7 @@ class WifiPanel extends LitElement {
             </div>
             <div class="mui-panel" ?hidden="${elrsState.config.mode === 'STA'}">
                 <a id="connect" href="#"
-                   @click="${() => this.postWithFeedback('Connect to Home Network', 'An error occurred connecting to the Home network', '/connect', null)}">
+                   @click="${() => postWithFeedback('Connect to Home Network', 'An error occurred connecting to the Home network', '/connect', null)}">
                     Connect to Home network: ${elrsState.options['wifi-ssid']}
                 </a>
             </div>
