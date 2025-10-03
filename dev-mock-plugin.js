@@ -19,6 +19,7 @@ export function devMockPlugin() {
   // Basic stub data used by multiple endpoints
   const stubState = {
     options: {
+        customised: true,
         "uid": [1,2,3,4,5,6],   // this is the 'flashed' UID and may be empty if using traditional binding on an RX.
         "tlm-interval": 240,
         "fan-runtime": 30,
@@ -27,6 +28,7 @@ export function devMockPlugin() {
         "unlock-higher-power": false,
         "is-airport": true,
         "rcvr-uart-baud": 420000,
+        "airport-uart-baud": 9600,
         "rcvr-invert-tx": false,
         "lock-on-first-connection": true,
         "domain": 1,
@@ -154,6 +156,9 @@ export function devMockPlugin() {
         }
         if (method === 'POST' && url.startsWith('/reset')) {
           // e.g. /reset?lr1121
+          if(url.endsWith('?options')){
+            return sendText(res, 'Reset complete, rebooting...')
+          }
           return sendText(res, 'Custom firmware flag cleared, rebooting...')
         }
         // Hardware page mock endpoints

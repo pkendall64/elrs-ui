@@ -172,21 +172,28 @@ class BindingPanel extends LitElement {
         e.preventDefault();
 
         if (FEATURES.IS_TX) {
-            saveOptions({
+            const changes = {
                 ...elrsState.options,
                 customised: true,
                 uid: this.uid
-            }, () => {
+            }
+            saveOptions(changes, () => {
                 this.originalUID = this.uid;
                 this.originalUIDType = 'Overridden';
                 this.phrase.value = '';
                 this.updateUIDType(this.originalUIDType);
+                elrsState.options = changes;
+                return this.requestUpdate()
             })
         } else {
-            saveConfig({
+            const changes =  {
                 ...elrsState.config,
                 uid: this.uid,
                 vbind: this.vbind.value
+            }
+            saveConfig(changes, () => {
+                elrsState.config = changes;
+                return this.requestUpdate()
             })
         }
     }

@@ -8,7 +8,9 @@ import './pages/continuous-wave.js';
 import './pages/lr1121-updater.js';
 import './pages/hardware-layout.js';
 import './pages/binding-panel.js';
-import './pages/options-panel.js';
+import './pages/rx-options-panel.js';
+import './pages/tx-options-panel.js';
+import './pages/models-panel.js';
 import './pages/wifi-panel.js';
 import './pages/update-panel.js';
 import './pages/model-panel.js';
@@ -46,6 +48,9 @@ export class App extends LitElement {
                         <ul>
                             <li><a id="menu-binding" href="#binding"><span class="mui--align-middle icon--symbols icon--symbols--bind"></span>Binding</a></li>
                             <li><a id="menu-options" href="#options"><span class="mui--align-middle icon--symbols icon--symbols--options"></span>Options</a></li>
+                            ${FEATURES.IS_TX ? html`
+                            <li><a id="menu-models" href="#models"><span class="mui--align-middle icon--symbols icon--symbols--models"></span>Models</a></li>
+                            ` : ''}
                             <li><a id="menu-wifi" href="#wifi"><span class="mui--align-middle icon--symbols icon--symbols--wifi"></span>WiFi</a></li>
                             <li><a id="menu-update" href="#update"><span class="mui--align-middle icon--symbols icon--symbols--update"></span>Update</a></li>
                             <li><a id="menu-model" href="#model"><span class="mui--align-middle icon--symbols icon--symbols--connections"></span>Model</a></li>
@@ -103,7 +108,7 @@ export class App extends LitElement {
 
     firstUpdated(_changedProperties) {
         // Bind menu links to rerender quickly
-        ['hardware', 'cw', 'lr1121', 'binding', 'options', 'wifi', 'update', 'model', 'buttons']
+        ['hardware', 'cw', 'lr1121', 'binding', 'options', 'wifi', 'update', 'model', 'buttons', 'models']
             .forEach(id => {
                 const el = this.querySelector(`#menu-${id}`);
                 if (el) el.addEventListener('click', () => setTimeout(this.renderRoute));
@@ -159,7 +164,7 @@ export class App extends LitElement {
             case 'binding':
                 return '<binding-panel></binding-panel>';
             case 'options':
-                return '<options-panel></options-panel>';
+                return FEATURES.IS_TX ? '<tx-options-panel></tx-options-panel>' : '<rx-options-panel></rx-options-panel>';
             case 'wifi':
                 return '<wifi-panel></wifi-panel>';
             case 'update':
@@ -172,6 +177,8 @@ export class App extends LitElement {
                 return '<hardware-layout></hardware-layout>';
             case 'cw':
                 return '<continuous-wave></continuous-wave>';
+            case 'models':
+                return '<models-panel></models-panel>';
             case 'lr1121':
                 return FEATURES.HAS_LR1121 ? '<lr1121-updater></lr1121-updater>' : '';
             default:

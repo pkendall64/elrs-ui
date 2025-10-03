@@ -16,7 +16,7 @@ export const FEATURES = {
   HAS_SX128X: toBool(import.meta.env.VITE_FEATURE_HAS_SX128X, false),
   HAS_SX127X: toBool(import.meta.env.VITE_FEATURE_HAS_SX127X, false),
   HAS_LR1121: toBool(import.meta.env.VITE_FEATURE_HAS_LR1121, false),
-  HAS_SUBGHZ: toBool(import.meta.env.VITE_FEATURE_HAS_SUBGHZ, false),
+  HAS_SUBGHZ: toBool(import.meta.env.VITE_FEATURE_HAS_LR1121, false) || toBool(import.meta.env.VITE_FEATURE_HAS_SX127X, false),
 };
 
 export default FEATURES;
