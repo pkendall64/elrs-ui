@@ -87,9 +87,9 @@ export class App extends LitElement {
                         </svg>
                     </div>
                     <div style="padding-left: 15px">
-                        <div id="product_name">Loading...</div>
+                        <div id="product_name">${elrsState.config.product_name}</div>
                         <div>
-                            <b>Firmware Rev. </b>@@{VERSION} ${elrsState.options.reg_domain}
+                            <b>Firmware Rev. </b>@@{VERSION} ${elrsState.config.reg_domain}
                         </div>
                     </div>
                 </div>

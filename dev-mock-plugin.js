@@ -1,6 +1,8 @@
 // Simple dev mock server plugin extracted for maintainability
 // ESM module used by vite.config.js
 
+import FEATURES from "./src/features.js";
+
 export function devMockPlugin() {
   function sendJSON(res, obj, status = 200) {
     res.statusCode = status
@@ -79,10 +81,28 @@ export function devMockPlugin() {
           req.on('end', () => resolve(data))
         })
 
+        if (method === 'GET' && url === '/config?export') {
+            return sendJSON(res, {  })
+        }
         if (method === 'GET' && url === '/config') {
           // Reset the networks scan delay counter whenever config is fetched
           networkQueryCount = 0
           return sendJSON(res, { options: stubState.options, config: stubState.config })
+        }
+        if (method === 'GET' && url === '/target') {
+          // Reset the networks scan delay counter whenever config is fetched
+          networkQueryCount = 0
+          return sendJSON(res, {
+            "target": "Unified???",
+            "version": "25.0.0",
+            "product_name": "Bobbybox 27GHz TX",
+            "lua_name": "Bobbybox 27G TX",
+            "reg_domain": "AU915",
+            "git-commit": "3468759",
+            "module-type": FEATURES.IS_TX ? "TX" : "RX",
+            "radio-type": FEATURES.HAS_SX128X ? "SX128X" : (FEATURES.HAS_LR1121 ? "LR1121" : "SX127X"),
+            "has-sub-ghz": !FEATURES.HAS_SX128X,
+            })
         }
         if (method === 'GET' && (url === '/networks.json' || url.startsWith('/networks.json'))) {
           networkQueryCount++
