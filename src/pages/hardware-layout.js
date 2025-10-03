@@ -1,7 +1,7 @@
 import {html, LitElement, nothing} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import '../assets/mui.js'
-import {cuteAlert} from '../utils/libs.js'
+import {cuteAlert, postWithFeedback} from '../utils/libs.js'
 import '../components/filedrag.js'
 import HARDWARE_SCHEMA from '../utils/hardware-schema.js'
 
@@ -29,7 +29,8 @@ export class HardwareLayout extends LitElement {
                          style="display:${this.customised ? 'block' : 'none'}; background-color: #FFC107;">
                         This hardware configuration has been customized. This can be safely ignored if this is a custom hardware
                         build or for testing purposes.<br>
-                        You can <a download href="/hardware.json">download</a> the configuration or <a href="/reset?hardware">reset</a>
+                        You can <a download href="/hardware.json">download</a> the configuration or 
+                        <a href="/reset?hardware" @click="${postWithFeedback('Hardware Configuration Reset', 'Reset failed', '/reset?hardware')}">reset</a>
                         to pre-configured defaults and reboot.
                     </div>
                     <form id="upload_hardware" method="POST" action="/hardware">
@@ -154,20 +155,6 @@ export class HardwareLayout extends LitElement {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/hardware.json');
         xhr.setRequestHeader('Content-Type', 'application/json');
-        const formData = new FormData(form);
-        const body = JSON.stringify(Object.fromEntries(formData), (k, v) => {
-            if (v === '') return undefined;
-            const el = document.getElementById(k);
-            if (el && el.type === 'checkbox') {
-                return v === 'on';
-            }
-            if (el && el.classList.contains('array')) {
-                const arr = v.split(',').map((element) => Number(element));
-                return arr.length === 0 ? undefined : arr;
-            }
-            return isNaN(v) ? v : +v;
-        });
-        xhr.send(body);
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 cuteAlert({
@@ -188,6 +175,20 @@ export class HardwareLayout extends LitElement {
                 });
             }
         };
+        const formData = new FormData(form);
+        const body = JSON.stringify(Object.fromEntries(formData), (k, v) => {
+            if (v === '') return undefined;
+            const el = document.getElementById(k);
+            if (el && el.type === 'checkbox') {
+                return v === 'on';
+            }
+            if (el && el.classList.contains('array')) {
+                const arr = v.split(',').map((element) => Number(element));
+                return arr.length === 0 ? undefined : arr;
+            }
+            return isNaN(v) ? v : +v;
+        });
+        xhr.send(body);
         return false;
     }
 }
