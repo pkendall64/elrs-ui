@@ -49,11 +49,13 @@ export class App extends LitElement {
                             <li><a id="menu-binding" href="#binding"><span class="mui--align-middle icon--symbols icon--symbols--bind"></span>Binding</a></li>
                             <li><a id="menu-options" href="#options"><span class="mui--align-middle icon--symbols icon--symbols--options"></span>Options</a></li>
                             ${FEATURES.IS_TX ? html`
-                            <li><a id="menu-models" href="#models"><span class="mui--align-middle icon--symbols icon--symbols--models"></span>Models</a></li>
+                            <li><a id="menu-models" href="#models"><span class="mui--align-middle icon--symbols icon--symbols--settings"></span>Import/Export</a></li>
                             ` : ''}
                             <li><a id="menu-wifi" href="#wifi"><span class="mui--align-middle icon--symbols icon--symbols--wifi"></span>WiFi</a></li>
                             <li><a id="menu-update" href="#update"><span class="mui--align-middle icon--symbols icon--symbols--update"></span>Update</a></li>
+                            ${!FEATURES.IS_TX ? html`
                             <li><a id="menu-model" href="#model"><span class="mui--align-middle icon--symbols icon--symbols--connections"></span>Model</a></li>
+                            ` : ''}
                             ${elrsState.config['button-actions'] && elrsState.config['button-actions'].length !== 0 ? html`
                                 <li><a id="menu-buttons" href="#buttons"><span class="mui--align-middle icon--symbols icon--symbols-buttons"></span>Buttons</a></li>
                             ` : ''}
@@ -87,7 +89,7 @@ export class App extends LitElement {
                     <div style="padding-left: 15px">
                         <div id="product_name">Loading...</div>
                         <div>
-                            <b>Firmware Rev. </b>@@{VERSION} <span id="reg_domain"></span>
+                            <b>Firmware Rev. </b>@@{VERSION} ${elrsState.options.reg_domain}
                         </div>
                     </div>
                 </div>
@@ -170,7 +172,7 @@ export class App extends LitElement {
             case 'update':
                 return '<update-panel></update-panel>';
             case 'model':
-                return '<model-panel></model-panel>';
+                return !FEATURES.IS_TX ? '<model-panel></model-panel>' : '';
             case 'buttons':
                 return FEATURES.IS_TX ? '<buttons-panel></buttons-panel>' : '';
             case 'hardware':
