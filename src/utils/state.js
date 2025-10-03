@@ -1,5 +1,5 @@
 import {State} from "@lit-app/state";
-import {cuteAlert} from "../assets/libs.js";
+import {cuteAlert} from "./libs.js";
 
 class ElrsState extends State {
     config = {}

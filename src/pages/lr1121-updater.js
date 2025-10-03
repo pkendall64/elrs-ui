@@ -2,7 +2,7 @@ import {html, LitElement} from 'lit';
 import {customElement, query, state} from 'lit/decorators.js';
 import '../assets/mui.js'
 import '../components/filedrag.js'
-import {cuteAlert} from "../assets/libs.js";
+import {cuteAlert} from "../utils/libs.js";
 
 @customElement('lr1121-updater')
 export class LR1121Updater extends LitElement {

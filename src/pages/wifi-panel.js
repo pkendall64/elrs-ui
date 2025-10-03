@@ -1,8 +1,8 @@
 import {html, LitElement} from "lit";
 import {customElement, state} from "lit/decorators.js";
 import {elrsState} from "../utils/state.js";
-import {_, postWithFeedback} from "../assets/libs.js";
-import {autocomplete} from "../assets/autocomplete.js";
+import {_, postWithFeedback} from "../utils/libs.js";
+import {autocomplete} from "../utils/autocomplete.js";
 
 @customElement('wifi-panel')
 class WifiPanel extends LitElement {

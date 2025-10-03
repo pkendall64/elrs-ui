@@ -1,7 +1,7 @@
 import {html, LitElement, nothing} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import '../assets/mui.js'
-import {cuteAlert} from '../assets/libs.js'
+import {cuteAlert} from '../utils/libs.js'
 import '../components/filedrag.js'
 import HARDWARE_SCHEMA from '../utils/hardware-schema.js'
 

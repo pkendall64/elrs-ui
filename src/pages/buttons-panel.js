@@ -1,7 +1,7 @@
 import {html, LitElement} from "lit";
 import {customElement} from "lit/decorators.js";
 import {elrsState, saveConfig} from "../utils/state.js";
-import {_, _renderOptions} from "../assets/libs.js";
+import {_, _renderOptions} from "../utils/libs.js";
 
 @customElement('buttons-panel')
 class ButtonsPanel extends LitElement {

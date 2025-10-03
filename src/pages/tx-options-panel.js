@@ -1,9 +1,8 @@
 import {html, LitElement} from "lit";
 import {customElement, state} from "lit/decorators.js";
 import FEATURES from "../features.js";
-import '../assets/mui.js';
 import {elrsState, saveOptions} from "../utils/state.js";
-import {_renderOptions, postWithFeedback} from "../assets/libs.js";
+import {_renderOptions, postWithFeedback} from "../utils/libs.js";
 
 @customElement('tx-options-panel')
 class TxOptionsPanel extends LitElement {
