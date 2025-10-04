@@ -31,17 +31,17 @@ class ButtonsPanel extends LitElement {
                             </tbody>
                         </table>
                     ` : ``}
-                    ${this.buttonActions[0] ? html`
-                    <div id="button1-color-div" style="display: ${this.buttonActions[0]['color']!==undefined ? 'block' : 'none'};">
+                    ${this.buttonActions[0] && this.buttonActions[0]['color']!==undefined ? html`
+                    <p>
                         <input id='button1-color' name='button1-color' type='color' @input="${this.changeCurrentColors}" .value="${this.toRGB(this.buttonActions[0]['color'])}"/>
                         <label for="button1-color">User button 1 color</label>
-                    </div>
+                    </p>
                     ` : ''}
-                    ${this.buttonActions[1] ? html`
-                    <div id="button2-color-div" style="display: ${this.buttonActions[1]['color']!==undefined ? 'block' : 'none'};">
+                    ${this.buttonActions[1] && this.buttonActions[1]['color']!==undefined ? html`
+                    <p>
                         <input id='button2-color' name='button2-color' type='color' @input="${this.changeCurrentColors}" .value="${this.toRGB(this.buttonActions[1]['color'])}"/>
                         <label for="button2-color">User button 2 color</label>
-                    </div>
+                    </p>
                     ` : ''}
                     <button id="submit-actions" class="mui-btn mui-btn--primary" @click="${this.submitButtonActions}">Save</button>
                 </form>
@@ -102,8 +102,7 @@ class ButtonsPanel extends LitElement {
         for (const [k, v] of Object.entries(data)) {
             if (_(k) && _(k).type === 'color') {
                 const index = parseInt(k.substring(6)) - 1;
-                if (_(k + '-div').style.display === 'none') colors[index] = -1;
-                else colors[index] = this.to8bit(v);
+                colors[index] = this.to8bit(v);
             }
         }
         // Send current colors without UI noise using shared helper

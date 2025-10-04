@@ -153,7 +153,6 @@ export class HardwareLayout extends LitElement {
     _submitConfig() {
         const form = document.getElementById('upload_hardware');
         const formData = new FormData(form);
-        const changes = JSON.parse(JSON.stringify(Object.fromEntries(formData), (k, v) => v)) // placeholder
         // rebuild using original serializer logic
         const body = JSON.stringify(Object.fromEntries(formData), (k, v) => {
             if (v === '') return undefined;
