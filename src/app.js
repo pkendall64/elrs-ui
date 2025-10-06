@@ -4,17 +4,7 @@ import FEATURES from "./features.js";
 import {elrsState} from './utils/state.js';
 import './components/elrs-footer.js';
 
-import './pages/continuous-wave.js';
-import './pages/lr1121-updater.js';
-import './pages/hardware-layout.js';
-import './pages/binding-panel.js';
-import './pages/rx-options-panel.js';
-import './pages/tx-options-panel.js';
-import './pages/models-panel.js';
-import './pages/wifi-panel.js';
-import './pages/update-panel.js';
-import './pages/model-panel.js';
-import './pages/buttons-panel.js';
+import './pages/info-panel.js';
 
 @customElement('elrs-app')
 export class App extends LitElement {
@@ -46,6 +36,7 @@ export class App extends LitElement {
                     <li>
                         <strong>General</strong>
                         <ul>
+                            <li><a id="menu-info" href="#info"><span class="mui--align-middle icon--symbols icon--symbols--bind"></span>Information</a></li>
                             <li><a id="menu-binding" href="#binding"><span class="mui--align-middle icon--symbols icon--symbols--bind"></span>Binding</a></li>
                             <li><a id="menu-options" href="#options"><span class="mui--align-middle icon--symbols icon--symbols--options"></span>Options</a></li>
                             ${FEATURES.IS_TX ? html`
@@ -163,6 +154,8 @@ export class App extends LitElement {
 
     buildRouteContent(route) {
         switch (route) {
+            case 'info':
+                return '<info-panel></info-panel>';
             case 'binding':
                 return '<binding-panel></binding-panel>';
             case 'options':
@@ -187,6 +180,60 @@ export class App extends LitElement {
                 return '';
         }
     };
+
+    generalGroupLoaded = false;
+    advancedGroupLoaded = false;
+
+    async loadGeneralGroup() {
+        if (this.generalGroupLoaded) return;
+        try {
+            const imports = [
+                import('./pages/binding-panel.js'),
+                import('./pages/wifi-panel.js'),
+                import('./pages/update-panel.js')
+            ];
+            // FEATURE:IS_TX
+            imports.push(import('./pages/tx-options-panel.js'));
+            imports.push(import('./pages/models-panel.js'));
+            imports.push(import('./pages/buttons-panel.js'));
+            // /FEATURE:IS_TX
+            // FEATURE:NOT IS_TX
+            imports.push(import('./pages/rx-options-panel.js'));
+            imports.push(import('./pages/model-panel.js'));
+            // /FEATURE:NOT IS_TX
+            await Promise.all(imports);
+        } finally {
+            this.generalGroupLoaded = true;
+        }
+    }
+
+    async loadAdvancedGroup() {
+        if (this.advancedGroupLoaded) return;
+        try {
+            const imports = [
+                import('./pages/hardware-layout.js'),
+                import('./pages/continuous-wave.js')
+            ];
+            // FEATURE:HAS_LR1121
+            imports.push(import('./pages/lr1121-updater.js'));
+            // /FEATURE:HAS_LR1121
+            await Promise.all(imports);
+        } finally {
+            this.advancedGroupLoaded = true;
+        }
+    }
+
+    async ensureLoadedForRoute(route) {
+        const generalRoutes = ['binding', 'options', 'wifi', 'update', 'model', 'buttons', 'models'];
+        const advancedRoutes = ['hardware', 'cw', 'lr1121'];
+        if (generalRoutes.includes(route)) {
+            await this.loadGeneralGroup();
+        } else if (advancedRoutes.includes(route)) {
+            await this.loadAdvancedGroup();
+        } else if (route === 'info') {
+            // info-panel is already imported at startup
+        }
+    }
 
     replaceMainWithTransition(newContent) {
         return new Promise(resolve => {
@@ -215,8 +262,9 @@ export class App extends LitElement {
         })
     };
 
-    renderRoute() {
-        const route = (location.hash || '#cw').replace('#', '');
+    async renderRoute() {
+        const route = (location.hash || '#info').replace('#', '');
+        await this.ensureLoadedForRoute(route);
         this.setActiveMenu(route);
         try {
             mui.overlay('off');
@@ -227,7 +275,8 @@ export class App extends LitElement {
         const sd = this.querySelector('#sidedrawer') || document.getElementById('sidedrawer');
         if (sd) sd.classList.remove('active');
         const content = this.buildRouteContent(route);
-        this.replaceMainWithTransition(content).then(() => this.scrollMainToTop());
+        await this.replaceMainWithTransition(content);
+        this.scrollMainToTop();
     };
 
     showSidedrawer() {

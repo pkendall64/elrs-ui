@@ -93,7 +93,7 @@ export function devMockPlugin() {
           // Reset the networks scan delay counter whenever config is fetched
           networkQueryCount = 0
           return sendJSON(res, {
-            "target": "Unified???",
+            "target": "Unified_ESP32_LR1121",
             "version": "25.0.0",
             "product_name": "Bobbybox 27GHz TX",
             "lua_name": "Bobbybox 27G TX",

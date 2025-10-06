@@ -171,8 +171,42 @@ export default defineConfig(({ command, mode }) => {
       rollupOptions: {
         input: {
           app: path.resolve(__dirname, 'app.html'),
-        }
-      }
+        },
+        output: {
+          entryFileNames: 'assets/[name]-[hash].js',
+          chunkFileNames: 'assets/[name]-[hash].js',
+          manualChunks(id) {
+            const p = id.split('\\').join('/');
+            const is = (name) => p.includes(`/src/pages/${name}.js`);
+            // Group General route modules
+            if (
+              is('binding-panel') ||
+              is('wifi-panel') ||
+              is('update-panel') ||
+              is('tx-options-panel') ||
+              is('rx-options-panel') ||
+              is('model-panel') ||
+              is('models-panel') ||
+              is('buttons-panel')
+            ) {
+              return 'general';
+            }
+            // Group Advanced route modules
+            if (
+              is('hardware-layout') ||
+              is('continuous-wave') ||
+              is('lr1121-updater')
+            ) {
+              return 'advanced';
+            }
+            // Force everything else (including node_modules) into the main chunk
+            return 'main';
+          },
+        },
+      },
+      // Keep CSS separate; request was specifically about JS files
+      cssCodeSplit: true,
+      sourcemap: false,
     }
   }
 })
