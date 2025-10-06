@@ -13,16 +13,19 @@ class WifiPanel extends LitElement {
 
     constructor() {
         super();
-        this.setupNetwork = this.setupNetwork.bind(this);
-        this.getNetworks = this.getNetworks.bind(this);
+        this._getNetworks = this._getNetworks.bind(this);
     }
 
     createRenderRoot() {
         return this;
     }
 
+    disconnectedCallback() {
+        this.running = false;
+    }
+
     updated(_) {
-        if (!this.running) this.getNetworks();
+        if (!this.running) this._getNetworks();
         this.running = true;
     }
 
@@ -57,7 +60,7 @@ class WifiPanel extends LitElement {
                         <label for="nt3">Forget home network setting, always use AP mode</label>
                     </div>
                     <br/>
-                    <div ?hidden="${this.selectedValue === '1' || this.selectedValue === '2'}">
+                    <div ?hidden="${this.selectedValue !== '0'}">
                         <div class="mui-textfield">
                             <input size='3' id='wifi-on-interval' name='wifi-on-interval' type='text'
                                    placeholder="Disabled"/>
@@ -77,7 +80,7 @@ class WifiPanel extends LitElement {
                             <label for="password">WiFi password</label>
                         </div>
                     </div>
-                    <button type="submit" class="mui-btn mui-btn--primary" @click="${this.setupNetwork}">Confirm
+                    <button type="submit" class="mui-btn mui-btn--primary" @click="${this._setupNetwork}">Confirm
                     </button>
                 </form>
             </div>
@@ -94,7 +97,7 @@ class WifiPanel extends LitElement {
         this.selectedValue = event.target.value;
     }
 
-    setupNetwork(event) {
+    _setupNetwork(event) {
         event.preventDefault();
         switch (this.selectedValue) {
             case '0':
@@ -122,22 +125,26 @@ class WifiPanel extends LitElement {
         }
     }
 
-    getNetworks() {
+    _getNetworks() {
         const self = this;
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.onload = function() {
-            if (this.status === 204) {
-                setTimeout(self.getNetworks, 2000);
-            } else {
-                const data = JSON.parse(this.responseText);
-                if (data.length > 0) {
-                    _('loader').style.display = 'none';
-                    autocomplete(_('network'), data);
+            if (self.running) {
+                if (this.status === 204) {
+                    setTimeout(self._getNetworks, 2000);
+                } else {
+                    const data = JSON.parse(this.responseText);
+                    if (data.length > 0) {
+                        _('loader').style.display = 'none';
+                        autocomplete(_('network'), data);
+                    }
                 }
             }
         };
         xmlhttp.onerror = function() {
-            setTimeout(self.getNetworks, 2000);
+            if (self.running) {
+                setTimeout(self._getNetworks, 2000);
+            }
         };
         xmlhttp.open('GET', 'networks.json', true);
         xmlhttp.send();
