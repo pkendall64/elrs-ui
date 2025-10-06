@@ -74,7 +74,6 @@ export class HardwareLayout extends LitElement {
     }
 
     _renderField(row) {
-        const common = (extraClass = '') => ({id: row.id, name: row.id, class: extraClass || row.className || ''});
         switch (row.type) {
             case 'checkbox':
                 return html`<input id="${row.id}" name="${row.id}" type="checkbox"/>`;
