@@ -72,7 +72,6 @@ class UpdatePanel extends LitElement {
     }
 
     _progressHandler(event) {
-        // _("loaded_n_total").innerHTML = "Uploaded " + event.loaded + " bytes of " + event.total;
         const percent = Math.round((event.loaded / event.total) * 100);
         this.progress = percent;
         this.progressText = percent + '% uploaded... please wait';

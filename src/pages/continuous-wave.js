@@ -32,7 +32,7 @@ export class ContinuousWave extends LitElement {
                     measured value below. This will be used to calculate the accuracy of the crystal used in the device
                     and
                     how far it differs from the ideal frequency.
-                    <form>
+                    <form class="mui-form">
                         ${this.data.radios === 2 ? html`
                             <div class="mui-radio">
                                 <label>
@@ -67,8 +67,8 @@ export class ContinuousWave extends LitElement {
                                 Set 915 MHz
                             </label>
                         </div>
-                        <!-- /FEATURE:HAS_LR1121 -->
                         <br>
+                        <!-- /FEATURE:HAS_LR1121 -->
                         <button class="mui-btn mui-btn--primary" ?disabled=${this.started} @click="${this._startCW}">
                             Start Continuous Wave
                         </button>

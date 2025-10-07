@@ -39,17 +39,19 @@ export class App extends LitElement {
                             <li><a id="menu-info" href="#info"><span class="mui--align-middle icon--symbols icon--symbols--bind"></span>Information</a></li>
                             <li><a id="menu-binding" href="#binding"><span class="mui--align-middle icon--symbols icon--symbols--bind"></span>Binding</a></li>
                             <li><a id="menu-options" href="#options"><span class="mui--align-middle icon--symbols icon--symbols--options"></span>Options</a></li>
-                            ${FEATURES.IS_TX ? html`
+                            <!-- FEATURE:IS_TX -->
                             <li><a id="menu-models" href="#models"><span class="mui--align-middle icon--symbols icon--symbols--settings"></span>Import/Export</a></li>
-                            ` : ''}
+                            <!-- /FEATURE:IS_TX -->
                             <li><a id="menu-wifi" href="#wifi"><span class="mui--align-middle icon--symbols icon--symbols--wifi"></span>WiFi</a></li>
                             <li><a id="menu-update" href="#update"><span class="mui--align-middle icon--symbols icon--symbols--update"></span>Update</a></li>
-                            ${!FEATURES.IS_TX ? html`
+                            <!-- FEATURE:NOT IS_TX -->
                             <li><a id="menu-model" href="#model"><span class="mui--align-middle icon--symbols icon--symbols--connections"></span>Model</a></li>
-                            ` : ''}
+                            <!-- /FEATURE:NOT IS_TX -->
+                            <!-- FEATURE:IS_TX -->
                             ${elrsState.config['button-actions'] && elrsState.config['button-actions'].length !== 0 ? html`
                                 <li><a id="menu-buttons" href="#buttons"><span class="mui--align-middle icon--symbols icon--symbols-buttons"></span>Buttons</a></li>
                             ` : ''}
+                            <!-- /FEATURE:IS_TX -->
                         </ul>
                     </li>
                     <li>
@@ -57,9 +59,9 @@ export class App extends LitElement {
                         <ul>
                             <li><a id="menu-hardware" href="#hardware"><span class="mui--align-middle icon--symbols icon--symbols--hardware"></span>Hardware Layout</a></li>
                             <li><a id="menu-cw" href="#cw"><span class="mui--align-middle icon--symbols icon--symbols--wave"></span>Continuous Wave</a></li>
-                            ${FEATURES.HAS_LR1121 ? html`
-                                <li><a id="menu-lr1121" href="#lr1121"><span class="mui--align-middle icon--symbols icon--symbols--lr1121"></span>LR1121 Firmware</a></li>
-                            `: ''}
+                            <!-- FEATURE:HAS_LR1121 -->
+                            <li><a id="menu-lr1121" href="#lr1121"><span class="mui--align-middle icon--symbols icon--symbols--lr1121"></span>LR1121 Firmware</a></li>
+                            <!-- /FEATURE:HAS_LR1121 -->
                         </ul>
                     </li>
                 </ul>
@@ -100,7 +102,6 @@ export class App extends LitElement {
 // </span>
 
     firstUpdated(_changedProperties) {
-        // Bind menu links to rerender quickly
         ['hardware', 'cw', 'lr1121', 'binding', 'options', 'wifi', 'update', 'model', 'buttons', 'models']
             .forEach(id => {
                 const el = this.querySelector(`#menu-${id}`);
@@ -123,6 +124,7 @@ export class App extends LitElement {
             const data = await resp.json();
             elrsState.options = data.options || null;
             elrsState.config = data.config || null;
+            const r = await fetch("/target").then((resp) => {return resp.json()}).then(r => {elrsState.target = r})
             this.requestUpdate()
         } catch (e) {
             console.warn('Startup data load failed:', e);
@@ -230,8 +232,6 @@ export class App extends LitElement {
             await this.loadGeneralGroup();
         } else if (advancedRoutes.includes(route)) {
             await this.loadAdvancedGroup();
-        } else if (route === 'info') {
-            // info-panel is already imported at startup
         }
     }
 
@@ -271,7 +271,6 @@ export class App extends LitElement {
         } catch {
         }
         document.body.classList.remove('hide-sidedrawer');
-        // Sidedrawer may be temporarily moved out of renderRoot; guard lookup
         const sd = this.querySelector('#sidedrawer') || document.getElementById('sidedrawer');
         if (sd) sd.classList.remove('active');
         const content = this.buildRouteContent(route);
@@ -280,7 +279,6 @@ export class App extends LitElement {
     };
 
     showSidedrawer() {
-        // Capture a stable reference before moving the node so @query doesn't return null
         const sidedrawer = this.sidedrawerEl;
         if (!sidedrawer) return;
         const options = {

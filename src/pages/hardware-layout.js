@@ -33,11 +33,11 @@ export class HardwareLayout extends LitElement {
                         <a href="/reset?hardware" @click="${postWithFeedback('Hardware Configuration Reset', 'Reset failed', '/reset?hardware')}">reset</a>
                         to pre-configured defaults and reboot.
                     </div>
-                    <form id="upload_hardware" method="POST" action="/hardware">
+                    <form class="mui-form">
                         <input type="hidden" id="customised" name="customised" value="true"/>
                         ${this._renderTable()}
                         <br>
-                        <input id="submit-config" type="button" value="Save Target Configuration"
+                        <input type="button" value="Save Target Configuration"
                                class="mui-btn mui-btn--primary" @click=${this._submitConfig}/>
                     </form>
                 </div>
@@ -48,6 +48,7 @@ export class HardwareLayout extends LitElement {
     _renderTable() {
         return html`
             <table>
+                <tbody>
                 ${this.constructor.SCHEMA.map(section => html`
                     <tr>
                         <td colspan="4"><b>${section.title}</b></td>
@@ -61,6 +62,7 @@ export class HardwareLayout extends LitElement {
                         </tr>
                     `)}
                 `)}
+                </tbody>
             </table>
         `;
     }

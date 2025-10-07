@@ -31,7 +31,6 @@
 
 body, input, select, textarea {
     color: #666;
-    font-weight: 300;
     line-height: 1.65em;
 }
 
@@ -148,6 +147,10 @@ img.icon-pwm {
 	background-size: 25px 25px;
 	background-position: right center;
 	background-repeat: no-repeat;
+    position: absolute;
+    right: 0;
+    width: 28px;
+    height: 28px;
 }
 
 /* Safari */

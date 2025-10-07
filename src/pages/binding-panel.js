@@ -6,7 +6,6 @@ import {calcMD5} from "../utils/md5.js";
 
 @customElement('binding-panel')
 class BindingPanel extends LitElement {
-    @query('#vbind') accessor vbind
     @query('#phrase') accessor phrase
 
     @state() accessor uid = []
@@ -31,10 +30,10 @@ class BindingPanel extends LitElement {
         return html`
             <div class="mui-panel mui--text-title">Binding</div>
             <div class="mui-panel">
-                <form id='upload_options'>
+                <form class="mui-form">
                     <!-- FEATURE:IS_TX -->
                     <div class="mui-select">
-                        <select id="vbind" @change="${(e) => {this.bindType = e.target.value}}">
+                        <select @change="${(e) => {this.bindType = e.target.value}}">
                             <option value="0">Persistent (Default) - Bind information is stored across reboots
                             </option>
                             <option value="1">Volatile - Never store bind information across reboots</option>
@@ -43,7 +42,7 @@ class BindingPanel extends LitElement {
                             <option value="3">Administered - Binding information can only be edited through web UI
                             </option>
                         </select>
-                        <label for="vbind">Binding storage</label>
+                        <label>Binding storage</label>
                     </div>
                     <!-- /FEATURE:IS_TX -->
                     ${this.bindType !== "1" ? html`
@@ -61,17 +60,17 @@ class BindingPanel extends LitElement {
                             </div>
                         </div>
                         <div class="mui-textfield">
-                            <label for='uid'>Binding UID</label>
                             ${this.bindType !== "1" ? html`
                                 <span class="badge" id="uid-type"
                                       style="background-color: ${this.uidData.bg}; color: ${this.uidData.fg}">${this.uidData.uidtype}</span>
                             ` : ''}
-                            <input size='40' id='uid' name='uid' type='text' class='array' readonly
+                            <input size='40' type='text' class='array' readonly
                                    value="${this.uid}"/>
+                            <label>Binding UID</label>
                         </div>
                     ` : ''}
                     <button class="mui-btn mui-btn--primary"
-                            ?disabled=${(this.vbind?.value !== '1') && this.uidData.uidtype !== 'Modified'}
+                            ?disabled=${(this.bindType !== '1') && this.uidData.uidtype !== 'Modified'}
                             @click="${this._submitOptions}">Save
                     </button>
                 </form>
@@ -170,16 +169,16 @@ class BindingPanel extends LitElement {
             return this.requestUpdate()
         })
         // /FEATURE:IS_TX
-        // !FEATURE:IS_TX
+        // FEATURE:NOT IS_TX
         const rx_changes =  {
             ...elrsState.config,
             uid: this.uid,
-            vbind: this.vbind.value
+            vbind: this.bindType
         }
         saveConfig(rx_changes, () => {
             elrsState.config = rx_changes;
             return this.requestUpdate()
         })
-        // /!FEATURE:IS_TX
+        // /FEATURE:NOT IS_TX
     }
 }

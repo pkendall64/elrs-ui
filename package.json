@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:tx": "VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_LR1121=true vite",
+    "dev:tx": "VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_LR1121=true VITE_FEATURE_HAS_SUBGHZ=true vite",
     "dev:rx": "vite",
     "clean": "rimraf dist",
     "build": "npm run clean && vite build",
-    "build:tx": "npm run clean && VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_LR1121=true vite build",
+    "build:tx": "npm run clean && VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_LR1121=true VITE_FEATURE_HAS_SUBGHZ=true vite build",
     "build:rx": "npm run clean && VITE_FEATURE_IS_TX=false VITE_FEATURE_HAS_LR1121=false vite build",
     "preview": "vite preview"
   },

@@ -1,6 +1,5 @@
 import {html, LitElement} from "lit";
 import {customElement, state} from "lit/decorators.js";
-import FEATURES from "../features.js";
 import {elrsState, saveOptions} from "../utils/state.js";
 import {_renderOptions} from "../utils/libs.js";
 import {postWithFeedback} from "../utils/feedback.js";
@@ -24,46 +23,52 @@ class TxOptionsPanel extends LitElement {
 
     render() {
         return html`
-            <div class="mui-panel mui--text-title">Runtime Options</div>
+            <div class="mui-panel mui--text-title" xmlns="http://www.w3.org/1999/html"
+                 xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">Runtime Options
+            </div>
             <div class="mui-panel">
-                <p>This form <b>overrides</b> the options provided when the firmware was flashed. These changes will
+                <form class="mui-form">
+                    <p>This form <b>overrides</b> the options provided when the firmware was flashed. These changes will
                     persist across reboots, but <b>will be reset</b> when the firmware is reflashed.</p>
-                <form id='upload_options' method='POST' action="/options">
                     <!-- FEATURE:HAS_SUBGHZ -->
                     <div class="mui-select">
                         <select @change="${(e) => this.domain = parseInt(e.target.value)}">
-                        ${_renderOptions(['AU915','FCC915','EU868','IN866','AU433','EU433','US433','US433-Wide'], this.domain)}
+                            ${_renderOptions(['AU915', 'FCC915', 'EU868', 'IN866', 'AU433', 'EU433', 'US433', 'US433-Wide'], this.domain)}
                         </select>
-                        <label for="domain">Regulatory domain</label>
+                        <label>Regulatory domain</label>
                     </div>
                     <!-- /FEATURE:HAS_SUBGHZ -->
                     <div class="mui-textfield">
                         <input size='5' type='number'
                                @input="${(e) => this.tlmInterval = parseInt(e.target.value)}"
-                               value="${this.tlmInterval}"/>
-                        <label for="tlm-interval">TLM report interval (ms)</label>
+                               value="${this.tlmInterval}">
+                            <label>TLM report interval (ms)</label>
+                        </input>
                     </div>
                     <div class="mui-textfield">
                         <input size='3' type='number'
                                @input="${(e) => this.fanRuntime = parseInt(e.target.value)}"
-                               value="${this.fanRuntime}"/>
-                        <label for="fan-runtime">Fan runtime (s)</label>
+                               value="${this.fanRuntime}">
+                        <label>Fan runtime (s)</label>
+                        </input>
                     </div>
                     <div class="mui-checkbox">
-                        <input type='checkbox' 
-                               @change="${(e) => this.isAirport = e.target.checked}" 
-                               checked="${this.isAirport}"/>
-                        <label for="is-airport">Use as AirPort Serial device</label>
+                        <input type='checkbox'
+                               @change="${(e) => this.isAirport = e.target.checked}"
+                               checked="${this.isAirport}">
+                        <label>Use as AirPort Serial device</label>
+                        </input>
                     </div>
                     ${this.isAirport ? html`
-                    <div class="mui-textfield"">
+                        <div class="mui-textfield"">
                         <input size='7' type='number'
                                @input="${(e) => this.baudRate = parseInt(e.target.value)}"
-                               value="${this.baudRate}"/>
-                        <label for="airport-uart-baud">AirPort UART baud</label>
-                    </div>
+                               value="${this.baudRate}">
+                        <label>AirPort UART baud</label>
+                        </input>
+                        </div>
                     ` : ''}
-
+    
                     <button class="mui-btn mui-btn--primary"
                             ?disabled="${!this.hasChanges()}"
                             @click="${this.save}"

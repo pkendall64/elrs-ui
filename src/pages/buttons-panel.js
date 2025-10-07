@@ -58,7 +58,7 @@ class ButtonsPanel extends LitElement {
         let result = []
         this.buttonActions = elrsState.config['button-actions'];
         for (const [b, _v] of Object.entries(this.buttonActions)) {
-            for (const [p, v] of Object.entries(_v['action'])) {
+            for (const [p, v] of Object.entries(_v.action)) {
                 result.push(this._appendButtonActionRow(parseInt(b), parseInt(p), v));
             }
         }
@@ -75,7 +75,7 @@ class ButtonsPanel extends LitElement {
                     <div class="mui-select">
                         <select @change="${(e) => this._changeAction(b, p, parseInt(e.target.value))}">
                             ${_renderOptions(['Unused', 'Increase Power', 'Go to VTX Band Menu', 'Go to VTX Channel Menu',
-                                'Send VTX Settings', 'Start WiFi', 'Enter Binding Mode', 'Start BLE Joystick'], v['action'])}
+                                'Send VTX Settings', 'Start WiFi', 'Enter Binding Mode', 'Start BLE Joystick'], v.action)}
                         </select>
                         <label>Action</label>
                     </div>
@@ -84,9 +84,9 @@ class ButtonsPanel extends LitElement {
                     <div class="mui-select">
                         <select id="select-press-${b}-${p}"
                                 @change="${(e) => this._changePress(b, p, e.target.value)}"
-                                ?disabled="${v['action'] === 0}"
+                                ?disabled="${v.action === 0}"
                         >
-                            <option value='' disabled hidden ?selected="${v['action'] === 0}"></option>
+                            <option value='' disabled hidden ?selected="${v.action === 0}"></option>
                             <option value='false' ?selected="${v['is-long-press'] === false}">Short press (click)
                             </option>
                             <option value='true' ?selected="${v['is-long-press'] === true}">Long press (hold)</option>
@@ -98,18 +98,18 @@ class ButtonsPanel extends LitElement {
                     <div class="mui-select">
                         <select id="select-timing-${b}-${p}"
                                 @change="${(e) => this._changeCount(b, p, parseInt(e.target.value))}"
-                                ?disabled="${v['action'] === 0}"
+                                ?disabled="${v.action === 0}"
                         >
-                            <option value='' disabled hidden ?selected="${v['action'] === 0}"></option>
+                            <option value='' disabled hidden ?selected="${v.action === 0}"></option>
                             ${v['is-long-press'] === true
                                     ? _renderOptions([
                                         'for 0.5 seconds', 'for 1 second', 'for 1.5 seconds', 'for 2 seconds',
                                         'for 2.5 seconds', 'for 3 seconds', 'for 3.5 seconds', 'for 4 seconds',
-                                    ], v['count'])
+                                    ], v.count)
                                     : _renderOptions([
                                         '1 time', '2 times', '3 times', '4 times',
                                         '5 times', '6 times', '7 times', '8 times',
-                                    ], v['count'])}
+                                    ], v.count)}
                         </select>
                         <label>Count</label>
                     </div>
@@ -166,8 +166,8 @@ class ButtonsPanel extends LitElement {
 
     _checkEnableButtonActionSave() {
         for (const [b, _v] of Object.entries(this.buttonActions)) {
-            for (const [p, v] of Object.entries(_v['action'])) {
-                if (v['action'] !== 0 && (_(`select-press-${b}-${p}`)?.value === '' || _(`select-timing-${b}-${p}`)?.value === '')) {
+            for (const [p, v] of Object.entries(_v.action)) {
+                if (v.action !== 0 && (_(`select-press-${b}-${p}`)?.value === '' || _(`select-timing-${b}-${p}`)?.value === '')) {
                     return true;
                 }
             }
@@ -176,7 +176,7 @@ class ButtonsPanel extends LitElement {
     }
 
     _changeAction(b, p, value) {
-        (this.buttonActions)[b]['action'][p]['action'] = value;
+        (this.buttonActions)[b].action[p].action = value;
         if (value === 0) {
             _(`select-press-${b}-${p}`).value = '';
             _(`select-timing-${b}-${p}`).value = '';
@@ -185,12 +185,12 @@ class ButtonsPanel extends LitElement {
     }
 
     _changePress(b, p, value) {
-        (this.buttonActions)[b]['action'][p]['is-long-press'] = (value === 'true');
+        (this.buttonActions)[b].action[p]['is-long-press'] = (value === 'true');
         this.requestUpdate()
     }
 
     _changeCount(b, p, value) {
-        (this.buttonActions)[b]['action'][p]['count'] = parseInt(value);
+        (this.buttonActions)[b].action[p].count = parseInt(value);
         this.requestUpdate()
     }
 }

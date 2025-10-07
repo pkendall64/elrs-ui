@@ -1,6 +1,3 @@
-/* Lightweight reusable feedback utilities: alerts + POST helper */
-
-// Minimal wrappers so call sites can be concise and bundle impact is reduced
 export function infoAlert(title, message) {
   return cuteAlert({ type: 'info', title, message })
 }

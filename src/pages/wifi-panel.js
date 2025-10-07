@@ -1,14 +1,19 @@
 import {html, LitElement} from "lit";
-import {customElement, state} from "lit/decorators.js";
+import {customElement, query, state} from "lit/decorators.js";
 import {elrsState} from "../utils/state.js";
-import {_} from "../utils/libs.js";
 import {postWithFeedback} from "../utils/feedback.js";
 import {autocomplete} from "../utils/autocomplete.js";
 
 @customElement('wifi-panel')
 class WifiPanel extends LitElement {
 
+    @query('#sethome') accessor form
+    @query('[name="network"]') accessor network
+    @query('[name="password"]') accessor password
+
     @state() accessor selectedValue = '0';
+    @state() accessor showLoader = true;
+
     running = false;
 
     constructor() {
@@ -41,47 +46,43 @@ class WifiPanel extends LitElement {
                     Home network, ExpressLRS will automatically connect to it. In Access Point (AP) mode, the network
                     name is ExpressLRS TX or ExpressLRS RX with password "expresslrs".
                 </p>
-                <form id="sethome" method="POST" autocomplete="off" class="mui-form">
+                <form id="sethome" class="mui-form">
                     <div class="mui-radio">
-                        <input type="radio" id="nt0" name="networktype" value="0" checked
-                               @change="${this._handleChange}">
-                        <label for="nt0">Set new home network</label>
+                        <input type="radio" name="networktype" value="0" checked @change="${this._handleChange}">
+                        <label>Set new home network</label>
                     </div>
                     <div class="mui-radio">
-                        <input type="radio" id="nt1" name="networktype" value="1" @change="${this._handleChange}">
-                        <label for="nt1">One-time connect to network, retain current home network setting</label>
+                        <input type="radio" name="networktype" value="1" @change="${this._handleChange}">
+                        <label>One-time connect to network, retain current home network setting</label>
                     </div>
                     <div class="mui-radio">
-                        <input type="radio" id="nt2" name="networktype" value="2" @change="${this._handleChange}">
-                        <label for="nt2">Start AP mode, retain current home network setting</label>
+                        <input type="radio" name="networktype" value="2" @change="${this._handleChange}">
+                        <label>Start AP mode, retain current home network setting</label>
                     </div>
                     <div class="mui-radio">
-                        <input type="radio" id="nt3" name="networktype" value="3" @change="${this._handleChange}">
-                        <label for="nt3">Forget home network setting, always use AP mode</label>
+                        <input type="radio" name="networktype" value="3" @change="${this._handleChange}">
+                        <label>Forget home network setting, always use AP mode</label>
                     </div>
                     <br/>
                     <div ?hidden="${this.selectedValue !== '0'}">
                         <div class="mui-textfield">
-                            <input size='3' id='wifi-on-interval' name='wifi-on-interval' type='text'
-                                   placeholder="Disabled"/>
+                            <input size='3' name='wifi-on-interval' type='text' placeholder="Disabled"/>
                             <label for="wifi-on-interval">WiFi "auto on" interval in seconds (leave blank to
                                 disable)</label>
                         </div>
                     </div>
                     <div id="credentials" ?hidden="${this.selectedValue === '2' || this.selectedValue === '3'}">
                         <div class="autocomplete mui-textfield" style="position:relative;">
-                            <div id="loader" style="position:absolute;right:0;width: 28px;height: 28px;"
-                                 class="loader"></div>
-                            <input id="network" type="text" name="network" placeholder="SSID"/>
+                            <div style="display: ${this.showLoader ? 'block' : 'none'};" class="loader"></div>
+                            <input name="network" type="text" placeholder="SSID"/>
                             <label for="network">WiFi SSID</label>
                         </div>
                         <div class="mui-textfield">
-                            <input size='64' id='password' name='password' type='password'/>
+                            <input size='64' name='password' type='password'/>
                             <label for="password">WiFi password</label>
                         </div>
                     </div>
-                    <button type="submit" class="mui-btn mui-btn--primary" @click="${this._setupNetwork}">Confirm
-                    </button>
+                    <button class="mui-btn mui-btn--primary" @click="${this._setupNetwork}">Confirm</button>
                 </form>
             </div>
             <div class="mui-panel" ?hidden="${elrsState.config.mode === 'STA'}">
@@ -99,21 +100,22 @@ class WifiPanel extends LitElement {
 
     _setupNetwork(event) {
         event.preventDefault();
+        const self = this
         switch (this.selectedValue) {
             case '0':
                 postWithFeedback('Set Home Network', 'An error occurred setting the home network', '/sethome?save', function () {
-                    return new FormData(_('sethome'));
+                    return new FormData(self.form);
                 }, function () {
                     elrsState.options = {
                         ...elrsState.options,
-                        'wifi-ssid': _('network').value,
-                        'wifi-password': _('password').value
+                        'wifi-ssid': self.network.value,
+                        'wifi-password': self.password.value
                     };
                 })(event);
                 break;
             case '1':
                 postWithFeedback('Connect To Network', 'An error occurred connecting to the network', '/sethome', function () {
-                    return new FormData(_('sethome'));
+                    return new FormData(self.form);
                 })(event);
                 break;
             case '2':
@@ -128,20 +130,20 @@ class WifiPanel extends LitElement {
     _getNetworks() {
         const self = this;
         const xmlhttp = new XMLHttpRequest();
-        xmlhttp.onload = function() {
+        xmlhttp.onload = function () {
             if (self.running) {
                 if (this.status === 204) {
                     setTimeout(self._getNetworks, 2000);
                 } else {
                     const data = JSON.parse(this.responseText);
                     if (data.length > 0) {
-                        _('loader').style.display = 'none';
-                        autocomplete(_('network'), data);
+                        self.showLoader = false;
+                        autocomplete(self.network, data);
                     }
                 }
             }
         };
-        xmlhttp.onerror = function() {
+        xmlhttp.onerror = function () {
             if (self.running) {
                 setTimeout(self._getNetworks, 2000);
             }
