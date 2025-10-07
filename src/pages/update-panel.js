@@ -1,14 +1,18 @@
 import {html, LitElement} from "lit";
-import {customElement} from "lit/decorators.js";
+import {customElement, state} from "lit/decorators.js";
 import '../assets/mui.js';
 import '../components/filedrag.js'
 import FEATURES from "../features.js";
 import {cuteAlert} from "../utils/feedback.js";
-import {_} from "../utils/libs.js";
 
 @customElement('update-panel')
 class UpdatePanel extends LitElement {
+    @state() accessor progress = 0
+    @state() accessor progressText = ''
+
     createRenderRoot() {
+        this._completeHandler = this._completeHandler.bind(this);
+        this._progressHandler = this._progressHandler.bind(this);
         return this;
     }
 
@@ -17,14 +21,14 @@ class UpdatePanel extends LitElement {
             <div class="mui-panel mui--text-title">Firmware Update</div>
             <div class="mui-panel">
                 <p>
-                    Select the correct <strong>firmware.bin</strong> for your platform otherwise a bad flash may occur.
+                    Select the correct <strong>firmware.bin${FEATURES.IS_8285 ? '.gz' : ''}</strong> for your platform otherwise a bad flash may occur.
                     If this happens you will need to recover via USB/Serial. You may also download the <a
                         href="firmware.bin" title="Click to download firmware">currently running firmware</a>.
                 </p>
                 <file-drop id="firmware-upload" label="Select firmware file" @file-drop="${this._fileSelectHandler}">or drop firmware file here</file-drop>
                 <br/>
-                <h3 id="status"></h3>
-                <progress id="progressBar" value="0" max="100" style="width:100%;"></progress>
+                <h3 id="status">${this.progressText}</h3>
+                <progress id="progressBar" value="0" max="100" style="width:100%;" .value="${this.progress}"></progress>
             </div>
         `;
     }
@@ -70,13 +74,15 @@ class UpdatePanel extends LitElement {
     _progressHandler(event) {
         // _("loaded_n_total").innerHTML = "Uploaded " + event.loaded + " bytes of " + event.total;
         const percent = Math.round((event.loaded / event.total) * 100);
-        _('progressBar').value = percent;
-        _('status').innerHTML = percent + '% uploaded... please wait';
+        this.progress = percent;
+        this.progressText = percent + '% uploaded... please wait';
+        this.requestUpdate()
     }
 
     _completeHandler(event) {
-        _('status').innerHTML = '';
-        _('progressBar').value = 0;
+        const self = this
+        this.progressText = '';
+        this.progress = 0;
         const data = JSON.parse(event.target.responseText);
         if (data.status === 'ok') {
             function showMessage() {
@@ -94,14 +100,15 @@ class UpdatePanel extends LitElement {
                 else
                     percent = percent + 2;
 
-                _('progressBar').value = percent;
-                _('status').innerHTML = percent + '% flashed... please wait';
+                self.progress = percent;
+                self.progressText = percent + '% flashed... please wait';
                 if (percent === 100) {
                     clearInterval(interval);
-                    _('status').innerHTML = '';
-                    _('progressBar').value = 0;
+                    self.progressText = '';
+                    self.progress = 0;
                     showMessage();
                 }
+                self.requestUpdate()
             }, 100);
         } else if (data.status === 'mismatch') {
             cuteAlert({
@@ -114,8 +121,9 @@ class UpdatePanel extends LitElement {
                 const xmlhttp = new XMLHttpRequest();
                 xmlhttp.onreadystatechange = function() {
                     if (this.readyState === 4) {
-                        _('status').innerHTML = '';
-                        _('progressBar').value = 0;
+                        self.progressText = '';
+                        self.progress = 0;
+                        self.requestUpdate();
                         if (this.status === 200) {
                             const data = JSON.parse(this.responseText);
                             cuteAlert({
@@ -144,11 +152,12 @@ class UpdatePanel extends LitElement {
                 message: data.msg
             });
         }
+        this.requestUpdate()
     }
 
     _errorHandler(event) {
-        _('status').innerHTML = '';
-        _('progressBar').value = 0;
+        this.progressText = '';
+        this.progress = 0;
         return cuteAlert({
             type: 'error',
             title: 'Update Failed',
@@ -157,8 +166,8 @@ class UpdatePanel extends LitElement {
     }
 
     _abortHandler(event) {
-        _('status').innerHTML = '';
-        _('progressBar').value = 0;
+        this.progressText = '';
+        this.progress = 0;
         return cuteAlert({
             type: 'info',
             title: 'Update Aborted',

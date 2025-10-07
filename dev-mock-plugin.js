@@ -139,7 +139,9 @@ export function devMockPlugin() {
         }
         if (method === 'POST' && url === '/update') {
           // Treat as file upload; we won’t parse multipart in this mock
-          return sendText(res, 'Firmware uploaded')
+          return sendJSON(res, {"status": "ok", "msg": "Update complete. Please wait for the LED to resume blinking before disconnecting power."})
+          // return sendJSON(res, {"status": "mismatch", "msg": "Wrong!"})
+          // return sendJSON(res, {"status": "error", "msg": "Bugger."})
         }
         // WiFi page mock endpoints
         if (method === 'POST' && (url === '/sethome' || url.startsWith('/sethome?'))) {
