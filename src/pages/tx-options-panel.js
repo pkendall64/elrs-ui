@@ -29,14 +29,14 @@ class TxOptionsPanel extends LitElement {
                 <p>This form <b>overrides</b> the options provided when the firmware was flashed. These changes will
                     persist across reboots, but <b>will be reset</b> when the firmware is reflashed.</p>
                 <form id='upload_options' method='POST' action="/options">
-                    ${FEATURES.HAS_SUBGHZ ? html`
-                        <div class="mui-select">
-                            <select @change="${(e) => this.domain = parseInt(e.target.value)}">
-                            ${_renderOptions(['AU915','FCC915','EU868','IN866','AU433','EU433','US433','US433-Wide'], this.domain)}
-                            </select>
-                            <label for="domain">Regulatory domain</label>
-                        </div>
-                    ` : ''}
+                    <!-- FEATURE:HAS_SUBGHZ -->
+                    <div class="mui-select">
+                        <select @change="${(e) => this.domain = parseInt(e.target.value)}">
+                        ${_renderOptions(['AU915','FCC915','EU868','IN866','AU433','EU433','US433','US433-Wide'], this.domain)}
+                        </select>
+                        <label for="domain">Regulatory domain</label>
+                    </div>
+                    <!-- /FEATURE:HAS_SUBGHZ -->
                     <div class="mui-textfield">
                         <input size='5' type='number'
                                @input="${(e) => this.tlmInterval = parseInt(e.target.value)}"
@@ -86,7 +86,9 @@ class TxOptionsPanel extends LitElement {
         e.preventDefault();
         const changes = {
             ...elrsState.options,
+            // FEATURE: HAS_SUBGHZ
             'domain': this.domain,
+            // /FEATURE: HAS_SUBGHZ
             'tlm-interval': this.tlmInterval,
             'fan-runtime': this.fanRuntime,
             'is-airport': this.isAirport,
@@ -100,7 +102,9 @@ class TxOptionsPanel extends LitElement {
 
     hasChanges() {
         let changed = false;
+        // FEATURE: HAS_SUBGHZ
         changed |= this.domain !== elrsState.options['domain'];
+        // /FEATURE: HAS_SUBGHZ
         changed |= this.tlmInterval !== elrsState.options['tlm-interval'];
         changed |= this.fanRuntime !== elrsState.options['fan-runtime'];
         changed |= this.isAirport !== elrsState.options['is-airport'];

@@ -2,6 +2,7 @@ import {html, LitElement} from "lit";
 import {customElement} from "lit/decorators.js";
 import FEATURES from "../features.js";
 import '../assets/mui.js';
+import {_renderOptions} from "../utils/libs.js";
 
 @customElement('rx-options-panel')
 class RxOptionsPanel extends LitElement {
@@ -16,21 +17,14 @@ class RxOptionsPanel extends LitElement {
                 <p>This form <b>overrides</b> the options provided when the firmware was flashed. These changes will
                     persist across reboots, but <b>will be reset</b> when the firmware is reflashed.</p>
                 <form id='upload_options' method='POST' action="/options">
-                    ${FEATURES.HAS_SUBGHZ ? html`
-                        <div class="mui-select">
-                            <select id='domain' name='domain'>
-                                <option value='0'>AU915</option>
-                                <option value='1'>FCC915</option>
-                                <option value='2'>EU868</option>
-                                <option value='3'>IN866</option>
-                                <option value='4'>AU433</option>
-                                <option value='5'>EU433</option>
-                                <option value='6'>US433</option>
-                                <option value='7'>US433-Wide</option>
-                            </select>
-                            <label for="domain">Regulatory domain</label>
-                        </div>
-                    ` : ''}
+                    <!-- FEATURE:HAS_SUBGHZ -->
+                    <div class="mui-select">
+                        <select @change="${(e) => this.domain = parseInt(e.target.value)}">
+                            ${_renderOptions(['AU915','FCC915','EU868','IN866','AU433','EU433','US433','US433-Wide'], this.domain)}
+                        </select>
+                        <label for="domain">Regulatory domain</label>
+                    </div>
+                    <!-- /FEATURE:HAS_SUBGHZ -->
                     <div id="baud-config" class="mui-textfield" style="display: block;">
                         <input size='7' id='rcvr-uart-baud' name='rcvr-uart-baud' type='text'/>
                         <label for="rcvr-uart-baud">UART baud</label>

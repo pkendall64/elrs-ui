@@ -1,7 +1,7 @@
 import {html, LitElement, nothing} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import '../assets/mui.js'
-import {cuteAlert, postWithFeedback, saveJSONWithReboot} from '../utils/feedback.js'
+import {postWithFeedback, saveJSONWithReboot} from '../utils/feedback.js'
 import '../components/filedrag.js'
 import HARDWARE_SCHEMA from '../utils/hardware-schema.js'
 
