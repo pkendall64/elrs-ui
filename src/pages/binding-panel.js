@@ -1,6 +1,5 @@
 import {html, LitElement} from "lit";
 import {customElement, query, state} from "lit/decorators.js";
-import FEATURES from "../features.js";
 import {elrsState, saveConfig, saveOptions} from "../utils/state.js";
 import '../assets/mui.js';
 import {calcMD5} from "../utils/md5.js";
@@ -33,20 +32,20 @@ class BindingPanel extends LitElement {
             <div class="mui-panel mui--text-title">Binding</div>
             <div class="mui-panel">
                 <form id='upload_options'>
-                    ${!FEATURES.IS_TX ? html`
-                        <div class="mui-select">
-                            <select id="vbind" @change="${(e) => {this.bindType = e.target.value}}">
-                                <option value="0">Persistent (Default) - Bind information is stored across reboots
-                                </option>
-                                <option value="1">Volatile - Never store bind information across reboots</option>
-                                <option value="2">Returnable - Unbinding a receiver reverts to flashed binding phrase
-                                </option>
-                                <option value="3">Administered - Binding information can only be edited through web UI
-                                </option>
-                            </select>
-                            <label for="vbind">Binding storage</label>
-                        </div>
-                    ` : ''}
+                    <!-- FEATURE:IS_TX -->
+                    <div class="mui-select">
+                        <select id="vbind" @change="${(e) => {this.bindType = e.target.value}}">
+                            <option value="0">Persistent (Default) - Bind information is stored across reboots
+                            </option>
+                            <option value="1">Volatile - Never store bind information across reboots</option>
+                            <option value="2">Returnable - Unbinding a receiver reverts to flashed binding phrase
+                            </option>
+                            <option value="3">Administered - Binding information can only be edited through web UI
+                            </option>
+                        </select>
+                        <label for="vbind">Binding storage</label>
+                    </div>
+                    <!-- /FEATURE:IS_TX -->
                     ${this.bindType !== "1" ? html`
                         <div>
                             Enter a new binding phrase to replace the current binding information.
@@ -156,30 +155,31 @@ class BindingPanel extends LitElement {
         e.stopPropagation();
         e.preventDefault();
 
-        if (FEATURES.IS_TX) {
-            const changes = {
-                ...elrsState.options,
-                customised: true,
-                uid: this.uid
-            }
-            saveOptions(changes, () => {
-                this.originalUID = this.uid;
-                this.originalUIDType = 'Overridden';
-                this.phrase.value = '';
-                this._updateUIDType(this.originalUIDType);
-                elrsState.options = changes;
-                return this.requestUpdate()
-            })
-        } else {
-            const changes =  {
-                ...elrsState.config,
-                uid: this.uid,
-                vbind: this.vbind.value
-            }
-            saveConfig(changes, () => {
-                elrsState.config = changes;
-                return this.requestUpdate()
-            })
+        // FEATURE:IS_TX
+        let tx_changes = {
+            ...elrsState.options,
+            customised: true,
+            uid: this.uid
         }
+        saveOptions(tx_changes, () => {
+            this.originalUID = this.uid;
+            this.originalUIDType = 'Overridden';
+            this.phrase.value = '';
+            this._updateUIDType(this.originalUIDType);
+            elrsState.options = tx_changes;
+            return this.requestUpdate()
+        })
+        // /FEATURE:IS_TX
+        // !FEATURE:IS_TX
+        const rx_changes =  {
+            ...elrsState.config,
+            uid: this.uid,
+            vbind: this.vbind.value
+        }
+        saveConfig(rx_changes, () => {
+            elrsState.config = rx_changes;
+            return this.requestUpdate()
+        })
+        // /!FEATURE:IS_TX
     }
 }

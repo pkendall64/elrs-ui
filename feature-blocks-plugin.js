@@ -1,6 +1,9 @@
 // HTML & JS Feature Blocks Vite plugin extracted for reuse/maintenance
 // Enables conditional inclusion of sections delimited by feature markers.
 // HTML markers: <!-- FEATURE:NAME --> ... <!-- /FEATURE:NAME -->
+//   - Note: HTML-style markers are supported in .html files AND inside .js/.mjs files
+//     (useful for embedded HTML such as lit-html templates). These are processed
+//     at build-time and removed along with their contents when the feature is disabled.
 // JS markers (either style):
 //   // FEATURE:NAME            ... (code) ...            // /FEATURE:NAME
 //   /* FEATURE:NAME */         ... (code) ...         /* /FEATURE:NAME */
@@ -64,6 +67,9 @@ export function htmlFeatureBlocksPlugin(env) {
   }
 
   function processJs(code) {
+    // First, also process HTML-style feature markers within JS files (for embedded HTML templates)
+    code = processHtml(code)
+
     // Block comment markers
     const blockRe = /\/\*\s*FEATURE:([\w\-.:\s]+)\s*\*\/[\s\S]*?\/\*\s*\/FEATURE:\1\s*\*\//gi
     code = processWithRegex(
