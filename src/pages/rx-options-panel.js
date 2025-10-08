@@ -18,9 +18,7 @@ class RxOptionsPanel extends LitElement {
 
     createRenderRoot() {
         this.enableModelMatch = elrsState.options.modelid!==undefined && elrsState.options.modelid !== 255
-        this.baudRate = elrsState.options['rcvr-uart-baud']
         this.lockOnFirst = elrsState.options['lock-on-first-connection']
-        this.isAirport = elrsState.options['is-airport']
         this.djiArmed = elrsState.options['dji-permanently-armed']
         this.modelId = elrsState.options['modelid']
         this.forceTlmOff = elrsState.options['force-tlm']
@@ -42,21 +40,6 @@ class RxOptionsPanel extends LitElement {
                         <label for="domain">Regulatory domain</label>
                     </div>
                     <!-- /FEATURE:HAS_SUBGHZ -->
-                    ${elrsState.config.pwm === undefined ? html` 
-                    <!-- TODO: Select protocol, with airport as a special protocol  -->
-                    <div class="mui-textfield"">
-                        <input size='7' type='number'
-                               @input="${(e) => this.baudRate = parseInt(e.target.value)}"
-                               value="${this.baudRate}"/>
-                        <label>UART baud</label>
-                    </div>
-                    <div class="mui-checkbox">
-                        <input type='checkbox'
-                               ?checked="${this.isAirport}"
-                               @change="${(e) => {this.isAirport = e.target.checked}}"/>
-                        <label>Use as AirPort Serial device</label>
-                    </div>
-                    ` : ''}
                     <div class="mui-checkbox">
                         <input type='checkbox'
                                ?checked="${this.lockOnFirst}"

@@ -25,13 +25,9 @@ export function devMockPlugin() {
         "uid": [1,2,3,4,5,6],   // this is the 'flashed' UID and may be empty if using traditional binding on an RX.
         "tlm-interval": 240,
         "fan-runtime": 30,
-        "no-sync-on-arm": false,
-        "uart-inverted": true,
-        "unlock-higher-power": false,
         "is-airport": true,
         "rcvr-uart-baud": 420000,
         "airport-uart-baud": 9600,
-        "rcvr-invert-tx": false,
         "lock-on-first-connection": true,
         "domain": 1,
         "wifi-on-interval": 60,
