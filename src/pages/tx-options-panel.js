@@ -23,9 +23,7 @@ class TxOptionsPanel extends LitElement {
 
     render() {
         return html`
-            <div class="mui-panel mui--text-title" xmlns="http://www.w3.org/1999/html"
-                 xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">Runtime Options
-            </div>
+            <div class="mui-panel mui--text-title">Runtime Options</div>
             <div class="mui-panel">
                 <form class="mui-form">
                     <p>This form <b>overrides</b> the options provided when the firmware was flashed. These changes will

@@ -1,13 +1,30 @@
 import {html, LitElement} from "lit";
-import {customElement} from "lit/decorators.js";
-import FEATURES from "../features.js";
+import {customElement, state} from "lit/decorators.js";
 import '../assets/mui.js';
 import {_renderOptions} from "../utils/libs.js";
+import {elrsState, saveOptions} from "../utils/state.js";
+import {postWithFeedback} from "../utils/feedback.js";
 
 @customElement('rx-options-panel')
 class RxOptionsPanel extends LitElement {
+    @state() accessor domain;
+    @state() accessor baudRate;
+    @state() accessor lockOnFirst;
+    @state() accessor isAirport;
+    @state() accessor djiArmed;
+    @state() accessor enableModelMatch;
+    @state() accessor modelId;
+    @state() accessor forceTlmOff;
+
     createRenderRoot() {
-        return this;
+        this.enableModelMatch = elrsState.options.modelid!==undefined && elrsState.options.modelid !== 255
+        this.baudRate = elrsState.options['rcvr-uart-baud']
+        this.lockOnFirst = elrsState.options['lock-on-first-connection']
+        this.isAirport = elrsState.options['is-airport']
+        this.djiArmed = elrsState.options['dji-permanently-armed']
+        this.modelId = elrsState.options['modelid']
+        this.forceTlmOff = elrsState.options['force-tlm']
+        return this
     }
 
     render() {
@@ -25,49 +42,109 @@ class RxOptionsPanel extends LitElement {
                         <label for="domain">Regulatory domain</label>
                     </div>
                     <!-- /FEATURE:HAS_SUBGHZ -->
-                    <div id="baud-config" class="mui-textfield" style="display: block;">
-                        <input size='7' id='rcvr-uart-baud' name='rcvr-uart-baud' type='text'/>
-                        <label for="rcvr-uart-baud">UART baud</label>
+                    ${elrsState.config.pwm === undefined ? html` 
+                    <!-- TODO: Select protocol, with airport as a special protocol  -->
+                    <div class="mui-textfield"">
+                        <input size='7' type='number'
+                               @input="${(e) => this.baudRate = parseInt(e.target.value)}"
+                               value="${this.baudRate}"/>
+                        <label>UART baud</label>
                     </div>
                     <div class="mui-checkbox">
-                        <input id='lock-on-first-connection' name='lock-on-first-connection' type='checkbox'/>
-                        <label for="lock-on-first-connection">Lock on first connection</label>
+                        <input type='checkbox'
+                               ?checked="${this.isAirport}"
+                               @change="${(e) => {this.isAirport = e.target.checked}}"/>
+                        <label>Use as AirPort Serial device</label>
+                    </div>
+                    ` : ''}
+                    <div class="mui-checkbox">
+                        <input type='checkbox'
+                               ?checked="${this.lockOnFirst}"
+                               @change="${(e) => {this.lockOnFirst = e.target.checked}}"/>
+                        <label>Lock on first connection</label>
                     </div>
                     <div class="mui-checkbox">
-                        <input id='is-airport' name='is-airport' type='checkbox'/>
-                        <label for="is-airport">Use as AirPort Serial device</label>
-                    </div>
-                    <div class="mui-checkbox">
-                        <input id='dji-permanently-armed' name='dji-permanently-armed' type='checkbox'/>
-                        <label for="dji-permanently-armed">Permanently arm DJI air units</label>
+                        <input type='checkbox'
+                               ?checked="${this.djiArmed}"
+                               @change="${(e) => {this.djiArmed = e.target.checked}}"/>
+                        <label>Permanently arm DJI air units</label>
                     </div>
                     <h2>Model Match</h2>
                     Specify the 'Receiver' number in OpenTX/EdgeTX model setup page and turn on the 'Model Match'
                     in the ExpressLRS Lua script for that model. 'Model Match' is between 0 and 63 inclusive.
-                    <br/><br/>
+                    <br/>
                     <div class="mui-checkbox">
-                        <input id='model-match' name='model-match' type='checkbox'/>
-                        <label for="model-match">Enable Model Match</label>
+                        <input type='checkbox' 
+                               ?checked="${this.enableModelMatch}"
+                               @change="${(e) => {this.enableModelMatch = e.target.checked}}"/>
+                        <label>Enable Model Match</label>
                     </div>
-                    <div class="mui-textfield" id="modelNum">
-                        <input id='modelid' type='text' name='modelid' value="255" required/>
-                        <label for="modelid">Model ID</label>
+                    ${this.enableModelMatch ? html`
+                    <div class="mui-textfield">
+                        <input type='text' required
+                               @change="${(e) => this.modelId = parseInt(e.target.value)}"
+                               value="${this.modelId}"/>
+                        <label>Model ID</label>
                     </div>
+                    ` : ''}
                     <h2>Force telemetry off</h2>
                     When running multiple receivers simultaneously from the same TX (to increase the number of PWM servo outputs), there can be at most one receiver with telemetry enabled.
                     <br>Enable this option to ignore the "Telem Ratio" setting on the TX and never send telemetry from this receiver.
-                    <br/><br/>
+                    <br/>
                     <div class="mui-checkbox">
                         <input id='force-tlm' name='force-tlm' type='checkbox' value="1"/>
                         <label for="force-tlm">Force telemetry OFF on this receiver</label>
                     </div>
 
-                    <button id='submit-options' class="mui-btn mui-btn--primary" disabled>Save</button>
-                    <button id="reset-options" class="mui-btn mui-btn--small mui-btn--danger" style="display: none;">
-                        Reset runtime options to defaults
+                    <button class="mui-btn mui-btn--primary"
+                            ?disabled="${!this.hasChanges()}"
+                            @click="${this.save}"
+                    >
+                        Save
                     </button>
+                    ${elrsState.options.customised ? html`
+                        <button class="mui-btn mui-btn--small mui-btn--danger mui--pull-right"
+                                @click="${postWithFeedback('Reset Runtime Options', 'An error occurred resetting runtime options', '/reset?options', null)}"
+                        >
+                            Reset to defaults
+                        </button>
+                    ` : ''}
                 </form>
             </div>
         `;
+    }
+
+    save(e) {
+        e.preventDefault();
+        const changes = {
+            ...elrsState.options,
+            // FEATURE: HAS_SUBGHZ
+            'domain': this.domain,
+            // /FEATURE: HAS_SUBGHZ
+            'rcvr-uart-baud': this.baudRate,
+            'lock-on-first-connection': this.lockOnFirst,
+            'is-airport': this.isAirport,
+            'dji-permanently-armed': this.djiArmed,
+            'modelid': this.enableModelMatch ? this.modelId : 255,
+            'force-tlm': this.forceTlmOff
+        }
+        saveOptions(changes, () => {
+            elrsState.options = changes
+            return this.requestUpdate()
+        })
+    }
+
+    hasChanges() {
+        let changed = false;
+        // FEATURE: HAS_SUBGHZ
+        changed |= this.domain !== elrsState.options['domain'];
+        // /FEATURE: HAS_SUBGHZ
+        changed |= this.baudRate !== elrsState.options['rcvr-uart-baud'];
+        changed |= this.lockOnFirst !== elrsState.options['lock-on-first-connection'];
+        changed |= this.isAirport !== elrsState.options['is-airport'];
+        changed |= this.djiArmed !== elrsState.options['dji-permanently-armed'];
+        changed |= this.modelId !== elrsState.options['modelid'];
+        changed |= this.forceTlmOff !== elrsState.options['force-tlm'];
+        return changed
     }
 }

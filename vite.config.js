@@ -184,10 +184,11 @@ export default defineConfig(({ command, mode }) => {
               is('wifi-panel') ||
               is('update-panel') ||
               is('tx-options-panel') ||
-              is('rx-options-panel') ||
-              is('model-panel') ||
               is('models-panel') ||
-              is('buttons-panel')
+              is('buttons-panel') ||
+              is('rx-options-panel') ||
+              is('connections-panel') ||
+              is('serial-panel')
             ) {
               return 'general';
             }
