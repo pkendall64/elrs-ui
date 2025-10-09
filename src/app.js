@@ -96,12 +96,6 @@ export class App extends LitElement {
         `;
     }
 
-    // Info page
-// <span class="mui--align-middle">
-// <span id="product_name">Loading...</span>
-// <b>Firmware Rev. </b>@@{VERSION} <span id="reg_domain"></span>
-// </span>
-
     firstUpdated(_changedProperties) {
         ['hardware', 'cw', 'lr1121', 'binding', 'options', 'wifi', 'update', 'connections', 'serial', 'buttons', 'models']
             .forEach(id => {
@@ -130,7 +124,7 @@ export class App extends LitElement {
         } catch (e) {
             console.warn('Startup data load failed:', e);
         }
-    };
+    }
 
     scrollMainToTop() {
         const doScroll = (behavior = 'smooth') => {
@@ -141,7 +135,7 @@ export class App extends LitElement {
             }
         };
         requestAnimationFrame(() => requestAnimationFrame(() => doScroll('smooth')));
-    };
+    }
 
     setActiveMenu(route) {
         // Sidedrawer may be moved into MUI overlay, making @query return null; resolve robustly
@@ -153,7 +147,7 @@ export class App extends LitElement {
         const id = 'menu-' +route;
         const el = id ? (this.querySelector(`#${id}`) || document.getElementById(id)) : null;
         if (el) el.classList.add('active');
-    };
+    }
 
     buildRouteContent(route) {
         switch (route) {
@@ -184,7 +178,7 @@ export class App extends LitElement {
             default:
                 return '';
         }
-    };
+    }
 
     generalGroupLoaded = false;
     advancedGroupLoaded = false;
@@ -264,7 +258,7 @@ export class App extends LitElement {
             this.mainEl.classList.add('route-fade-out');
             setTimeout(onEnd, 220);
         })
-    };
+    }
 
     async renderRoute() {
         const route = (location.hash || '#info').replace('#', '');
@@ -280,7 +274,7 @@ export class App extends LitElement {
         const content = this.buildRouteContent(route);
         await this.replaceMainWithTransition(content);
         this.scrollMainToTop();
-    };
+    }
 
     showSidedrawer() {
         const sidedrawer = this.sidedrawerEl;
@@ -295,9 +289,9 @@ export class App extends LitElement {
         const overlayEl = mui.overlay('on', options);
         overlayEl.appendChild(sidedrawer);
         setTimeout(() => sidedrawer.classList.add('active'), 20);
-    };
+    }
 
     hideSidedrawer() {
         document.body.classList.toggle('hide-sidedrawer');
-    };
+    }
 }

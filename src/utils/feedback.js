@@ -57,7 +57,7 @@ export function saveJSONWithReboot(title, errorTitle, url, changes, successCB) {
       }
     },
     onerror: async (xhr) => {
-      await cuteAlert({ type: 'error', title: errorTitle, message: xhr.responseText || 'Request failed' })
+      await errorAlert(errorTitle, xhr.responseText || 'Request failed')
     }
   })
 }

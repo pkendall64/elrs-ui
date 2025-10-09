@@ -7,7 +7,6 @@ class ElrsState extends State {
 }
 
 export function saveConfig(changes, successCB) {
-    // Reuse shared helper with standard titles
     saveJSONWithReboot('Configuration Update Succeeded', 'Configuration Update Failed', '/config', changes, successCB)
 }
 
