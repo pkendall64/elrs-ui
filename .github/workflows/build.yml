@@ -26,18 +26,26 @@ jobs:
       - name: Build Vite project
         run: |
           mkdir out
-          VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_LR1121=true VITE_FEATURE_HAS_SUBGHZ=true npm run build
+          VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_LR1121=true npm run build
           mv dist/esp32_fs.h out/web-lr1121-tx.h
-          VITE_FEATURE_IS_TX=false VITE_FEATURE_HAS_LR1121=true VITE_FEATURE_HAS_SUBGHZ=true npm run build
+          VITE_FEATURE_IS_TX=false VITE_FEATURE_HAS_LR1121=true npm run build
           mv dist/esp32_fs.h out/web-lr1121-rx.h
-          VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_SX128X=true VITE_FEATURE_HAS_SUBGHZ=false npm run build
+          VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_SX128X=true npm run build
           mv dist/esp32_fs.h out/web-sx128x-tx.h
-          VITE_FEATURE_IS_TX=false VITE_FEATURE_HAS_SX128X=true VITE_FEATURE_HAS_SUBGHZ=false npm run build
+          VITE_FEATURE_IS_TX=false VITE_FEATURE_HAS_SX128X=true npm run build
           mv dist/esp32_fs.h out/web-sx128x-rx.h
-          VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_SX127X=true VITE_FEATURE_HAS_SUBGHZ=true npm run build
+          VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_SX128X=true VITE_FEATURE_IS_8285=true npm run build
+          mv dist/esp32_fs.h out/web-sx128x-tx-8285.h
+          VITE_FEATURE_IS_TX=false VITE_FEATURE_HAS_SX128X=true VITE_FEATURE_IS_8285=true npm run build
+          mv dist/esp32_fs.h out/web-sx128x-rx-8285.h
+          VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_SX127X=true npm run build
           mv dist/esp32_fs.h out/web-sx127x-tx.h
-          VITE_FEATURE_IS_TX=false VITE_FEATURE_HAS_SX127X=true VITE_FEATURE_HAS_SUBGHZ=true npm run build
+          VITE_FEATURE_IS_TX=false VITE_FEATURE_HAS_SX127X=true npm run build
           mv dist/esp32_fs.h out/web-sx127x-rx.h
+          VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_SX127X=true VITE_FEATURE_IS_8285=true npm run build
+          mv dist/esp32_fs.h out/web-sx127x-tx-8285.h
+          VITE_FEATURE_IS_TX=false VITE_FEATURE_HAS_SX127X=true VITE_FEATURE_IS_8285=true npm run build
+          mv dist/esp32_fs.h out/web-sx127x-rx-8285.h
 
       - name: Get or create evergreen release
         id: evergreen_release
