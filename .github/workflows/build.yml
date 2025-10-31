@@ -1,0 +1,72 @@
+name: Build and Evergreen Release Header
+
+on:
+  push:
+    branches:
+      - master  # Set this to your main branch name
+
+jobs:
+  build-and-evergreen-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to create and manage releases
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Vite project
+        run: |
+          mkdir out
+          VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_LR1121=true VITE_FEATURE_HAS_SUBGHZ=true npm run build
+          mv dist/esp32_fs.h out/web-lr1121-tx.h
+          VITE_FEATURE_IS_TX=false VITE_FEATURE_HAS_LR1121=true VITE_FEATURE_HAS_SUBGHZ=true npm run build
+          mv dist/esp32_fs.h out/web-lr1121-rx.h
+          VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_SX128X=true VITE_FEATURE_HAS_SUBGHZ=false npm run build
+          mv dist/esp32_fs.h out/web-sx128x-tx.h
+          VITE_FEATURE_IS_TX=false VITE_FEATURE_HAS_SX128X=true VITE_FEATURE_HAS_SUBGHZ=false npm run build
+          mv dist/esp32_fs.h out/web-sx128x-rx.h
+          VITE_FEATURE_IS_TX=true VITE_FEATURE_HAS_SX127X=true VITE_FEATURE_HAS_SUBGHZ=true npm run build
+          mv dist/esp32_fs.h out/web-sx127x-tx.h
+          VITE_FEATURE_IS_TX=false VITE_FEATURE_HAS_SX127X=true VITE_FEATURE_HAS_SUBGHZ=true npm run build
+          mv dist/esp32_fs.h out/web-sx127x-rx.h
+
+      - name: Get or create evergreen release
+        id: evergreen_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check if the evergreen release already exists
+          RELEASE_ID=$(gh release view evergreen --json id -q '.id' 2>/dev/null || echo "")
+          
+          # Create a new release if it doesn't exist
+          if [ -z "$RELEASE_ID" ]; then
+            echo "Evergreen release not found. Creating a new one."
+            gh release create evergreen \
+              --title "Evergreen Master" \
+              --notes "This release is automatically updated with the latest build from the 'master' branch. Assets are continuously overwritten." \
+              --latest=false \
+              --prerelease \
+              --target master
+            # Re-fetch the ID for the next step
+            RELEASE_ID=$(gh release view evergreen --json id -q '.id')
+          fi
+          
+          echo "RELEASE_ID=$RELEASE_ID" >> $GITHUB_OUTPUT
+
+      - name: Upload and overwrite asset to evergreen release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload \
+            evergreen \
+            out/* \
+            --clobber # --clobber is the key to overwriting
