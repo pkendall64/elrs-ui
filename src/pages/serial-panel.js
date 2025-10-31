@@ -28,7 +28,7 @@ class SerialPanel extends LitElement {
 
     render() {
         return html`
-            <div class="mui-panel mui--text-title">Serial/UART Protocols</div>
+            <div class="mui-panel mui--text-title">Serial/UART Options</div>
             ${this._hasSerial1() || this._hasSerial2() ? html`
             <div class="mui-panel">
                 <p>Set the protocol(s) used to communicate with the flight controller or other external devices.</p>
